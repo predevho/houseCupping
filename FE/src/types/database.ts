@@ -5,18 +5,20 @@ export type Database = {
         Row: {
           id: string
           username: string
-          display_name: string | null
+          display_name: string
+          email: string | null
           created_at: string
         }
         Insert: {
           id: string
           username: string
-          display_name?: string | null
+          display_name: string
+          email?: string | null
           created_at?: string
         }
         Update: {
           username?: string
-          display_name?: string | null
+          display_name?: string
         }
       }
       beans: {
