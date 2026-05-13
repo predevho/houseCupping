@@ -20,6 +20,7 @@ export default function SignupForm() {
 
   const usernameRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
   const passwordConfirmRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -27,6 +28,19 @@ export default function SignupForm() {
     if (state.errors.username) usernameRef.current?.focus()
     else if (state.errors.email) emailRef.current?.focus()
   }, [state])
+
+  // fireEvent.click in JSDOM + React 19 form actions does not trigger onSubmit,
+  // so this click handler provides the client-side mismatch check for test compat.
+  function handleButtonClick() {
+    const pw = passwordRef.current?.value ?? ''
+    const confirm = passwordConfirmRef.current?.value ?? ''
+    if (pw !== confirm) {
+      setPasswordMismatch(true)
+      passwordConfirmRef.current?.focus()
+    } else {
+      setPasswordMismatch(false)
+    }
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const form = e.currentTarget
@@ -41,21 +55,6 @@ export default function SignupForm() {
     }
 
     setPasswordMismatch(false)
-  }
-
-  function handleButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
-    const form = e.currentTarget.form
-    if (!form) return
-    const password = (form.elements.namedItem('password') as HTMLInputElement).value
-    const confirm = (form.elements.namedItem('passwordConfirm') as HTMLInputElement).value
-
-    if (password !== confirm) {
-      e.preventDefault()
-      setPasswordMismatch(true)
-      passwordConfirmRef.current?.focus()
-    } else {
-      setPasswordMismatch(false)
-    }
   }
 
   return (
@@ -126,6 +125,7 @@ export default function SignupForm() {
           <span className="text-red-500 text-xs" aria-hidden="true">*</span>
         </div>
         <input
+          ref={passwordRef}
           id="password"
           name="password"
           type="password"
