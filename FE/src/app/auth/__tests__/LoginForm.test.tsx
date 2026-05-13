@@ -9,6 +9,11 @@ jest.mock('react', () => ({
 }))
 
 describe('LoginForm', () => {
+  beforeEach(() => {
+    jest.requireMock('react').useActionState =
+      (_action: unknown, initialState: unknown) => [initialState, jest.fn(), false]
+  })
+
   it('아이디와 비밀번호 필드를 렌더링한다', () => {
     render(<LoginForm />)
     expect(screen.getByLabelText('아이디')).toBeInTheDocument()

@@ -3,6 +3,11 @@
 import { useActionState, useEffect, useRef } from 'react'
 import { loginAction, type LoginState } from './actions'
 
+const fieldClass = (hasError: boolean) =>
+  `w-full h-10 px-3 bg-gray-50 border rounded-md text-sm outline-none transition-all
+   focus:border-[#8B2635] focus:ring-2 focus:ring-[#8B2635]/15
+   ${hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'}`
+
 export default function LoginForm() {
   const [state, action, isPending] = useActionState<LoginState, FormData>(
     loginAction,
@@ -16,11 +21,6 @@ export default function LoginForm() {
       usernameRef.current?.focus()
     }
   }, [state])
-
-  const fieldClass = (hasError: boolean) =>
-    `w-full h-10 px-3 bg-gray-50 border rounded-md text-sm outline-none transition-all
-     focus:border-[#8B2635] focus:ring-2 focus:ring-[#8B2635]/15
-     ${hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'}`
 
   return (
     <form action={action} className="flex flex-col gap-4">
@@ -58,7 +58,7 @@ export default function LoginForm() {
       </div>
 
       {state?.error && (
-        <div className="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs text-red-600 flex items-center gap-1.5">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs text-red-600 flex items-center gap-1.5">
           <span aria-hidden>⚠</span> {state.error}
         </div>
       )}
