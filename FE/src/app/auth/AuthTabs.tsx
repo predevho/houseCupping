@@ -10,7 +10,7 @@ export default function AuthTabs() {
   const [tab, setTab] = useState<Tab>('login')
 
   return (
-    <div className="flex-1 bg-white flex flex-col justify-center px-10 py-12">
+    <div className="flex-1 bg-white flex flex-col justify-center px-10 py-8 overflow-y-auto">
       <div className="flex border-b border-gray-100 mb-7">
         <button
           type="button"
