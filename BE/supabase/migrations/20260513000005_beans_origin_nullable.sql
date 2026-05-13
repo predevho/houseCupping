@@ -1,0 +1,1 @@
+ALTER TABLE public.beans ALTER COLUMN origin DROP NOT NULL;

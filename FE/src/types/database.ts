@@ -22,10 +22,10 @@ export type Database = {
       beans: {
         Row: {
           id: string
-          user_id: string
+          user_id: string | null
           cafe_name: string
           bean_name: string
-          origin: string
+          origin: string | null
           variety: string | null
           process: string | null
           roast_level: string | null
@@ -38,10 +38,10 @@ export type Database = {
         }
         Insert: {
           id?: string
-          user_id: string
+          user_id: string | null
           cafe_name: string
           bean_name: string
-          origin: string
+          origin?: string | null
           variety?: string | null
           process?: string | null
           roast_level?: string | null
@@ -59,6 +59,7 @@ export type Database = {
           id: string
           user_id: string
           bean_id: string
+          roast_date: string | null
           aroma: number
           acidity: number
           body: number
@@ -69,6 +70,7 @@ export type Database = {
           id?: string
           user_id: string
           bean_id: string
+          roast_date?: string | null
           aroma: number
           acidity: number
           body: number

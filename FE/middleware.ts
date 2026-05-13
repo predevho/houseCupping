@@ -1,6 +1,17 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PUBLIC_ROUTES = ['/login', '/signup']
+const PROTECTED_ROUTES = ['/beans/new', '/notes/new', '/profile']
+
+function isPublicRoute(pathname: string) {
+  return PUBLIC_ROUTES.some((route) => pathname.startsWith(route))
+}
+
+function isProtectedRoute(pathname: string) {
+  return PROTECTED_ROUTES.some((route) => pathname.startsWith(route))
+}
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -25,7 +36,23 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+  const { pathname } = request.nextUrl
+
+  // 로그인 상태에서 인증 페이지 접근 시 홈으로 리다이렉트
+  if (user && isPublicRoute(pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
+  // 비로그인 상태에서 보호된 라우트 접근 시 로그인으로 리다이렉트
+  if (!user && isProtectedRoute(pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    url.searchParams.set('next', pathname)
+    return NextResponse.redirect(url)
+  }
 
   return supabaseResponse
 }
