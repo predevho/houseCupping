@@ -10,7 +10,7 @@ export default async function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-3xl flex shadow-lg rounded-xl overflow-hidden min-h-[520px]">
+      <div className="w-full max-w-3xl flex shadow-lg rounded-xl overflow-hidden h-[640px]">
         {/* 왼쪽 브랜딩 패널 */}
         <div
           className="w-[45%] flex flex-col items-center justify-center gap-4 px-10"
