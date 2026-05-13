@@ -20,6 +20,10 @@ export async function loginAction(
   const username = formData.get('username') as string
   const password = formData.get('password') as string
 
+  if (!username || !password) {
+    return { error: '아이디와 비밀번호를 입력해주세요' }
+  }
+
   const supabase = await createClient()
 
   const { data: profile } = await supabase
@@ -52,6 +56,10 @@ export async function signupAction(
   const display_name = formData.get('display_name') as string
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+
+  if (!username || !display_name || !email || !password) {
+    return { errors: { general: '모든 필드를 입력해주세요' } }
+  }
 
   const supabase = await createClient()
 
