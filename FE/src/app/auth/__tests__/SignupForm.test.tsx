@@ -10,6 +10,7 @@ jest.mock('react', () => ({
 
 describe('SignupForm', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     jest.requireMock('react').useActionState =
       (_action: unknown, initialState: unknown) => [initialState, jest.fn(), false]
   })
