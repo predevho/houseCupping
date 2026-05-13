@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const PUBLIC_ROUTES = ['/login', '/signup']
+const PUBLIC_ROUTES = ['/auth']
 const PROTECTED_ROUTES = ['/beans/new', '/notes/new', '/profile']
 
 function isPublicRoute(pathname: string) {
@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
   // 비로그인 상태에서 보호된 라우트 접근 시 로그인으로 리다이렉트
   if (!user && isProtectedRoute(pathname)) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/auth'
     url.searchParams.set('next', pathname)
     return NextResponse.redirect(url)
   }
