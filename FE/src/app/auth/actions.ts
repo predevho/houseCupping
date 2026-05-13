@@ -26,11 +26,12 @@ export async function loginAction(
 
   const supabase = await createClient()
 
-  const { data: profile } = await supabase
+  const profileResult = await supabase
     .from('profiles')
     .select('email')
     .eq('username', username)
     .single()
+  const profile = profileResult.data as { email: string | null } | null
 
   if (!profile?.email) {
     return { error: '아이디 또는 비밀번호가 올바르지 않습니다' }

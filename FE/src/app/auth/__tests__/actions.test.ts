@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 const mockCreateClient = createClient as jest.Mock
-const mockRedirect = redirect as jest.Mock
+const mockRedirect = redirect as unknown as jest.Mock
 
 describe('loginAction', () => {
   beforeEach(() => jest.clearAllMocks())
