@@ -1,4 +1,4 @@
-# 기초 세팅 현황
+# houseCupping — 기초 세팅 현황
 
 ## 프로젝트 구조
 
@@ -123,12 +123,11 @@ agent-coding/
 | 기능 | 문서 |
 |---|---|
 | 인증 UI (`/auth` — 로그인·회원가입 탭) | `docs/features/AUTH-IMPLEMENTATION.md` |
+| 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
 
 ---
 
 ## 다음 작업
 
-- [ ] 레이아웃 및 내비게이션 기본 UI
-- [ ] 로그아웃 버튼
 - [ ] 원두 등록 폼 UI
 - [ ] 커핑 노트 작성 폼 UI
