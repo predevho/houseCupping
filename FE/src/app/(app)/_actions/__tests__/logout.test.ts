@@ -36,9 +36,9 @@ describe('logoutAction', () => {
     expect(mockRedirect).toHaveBeenCalledWith('/auth')
   })
 
-  it('signOut 실패해도 /auth로 redirect한다', async () => {
+  it('signOut이 throw해도 /auth로 redirect한다', async () => {
     mockCreateClient.mockResolvedValue({
-      auth: { signOut: jest.fn().mockResolvedValue({ error: new Error('fail') }) },
+      auth: { signOut: jest.fn().mockRejectedValue(new Error('network error')) },
     })
 
     await logoutAction()
