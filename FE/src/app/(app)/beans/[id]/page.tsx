@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
@@ -7,6 +8,17 @@ interface BeanDetail {
   origin: string | null
   process: string | null
   roast_level: string | null
+  created_at: string
+  profiles: { username: string } | null
+}
+
+interface CuppingNote {
+  id: string
+  aroma: number
+  acidity: number
+  body: number
+  roast_date: string | null
+  memo: string | null
   created_at: string
   profiles: { username: string } | null
 }
@@ -28,6 +40,14 @@ export default async function BeanDetailPage({ params }: Props) {
   if (!data) notFound()
 
   const bean = data as unknown as BeanDetail
+
+  const { data: notesData } = await supabase
+    .from('cupping_notes')
+    .select('id, aroma, acidity, body, roast_date, memo, created_at, profiles(username)')
+    .eq('bean_id', id)
+    .order('created_at', { ascending: false })
+
+  const notes = (notesData ?? []) as unknown as CuppingNote[]
 
   const registeredBy = bean.profiles?.username ?? '알 수 없음'
 
@@ -68,6 +88,45 @@ export default async function BeanDetailPage({ params }: Props) {
       <div className="text-xs text-gray-400 pt-2 border-t border-gray-100">
         <p>등록자 @{registeredBy}</p>
         <p>등록일 {registeredAt}</p>
+      </div>
+
+      <div className="flex flex-col gap-3 pt-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold">커핑 노트</h2>
+          <Link
+            href={`/cupping/new?beanId=${id}`}
+            className="text-xs text-[#8B2635] font-semibold"
+          >
+            + 노트 작성
+          </Link>
+        </div>
+
+        {notes.length > 0 ? (
+          <ul className="flex flex-col gap-4">
+            {notes.map((note) => (
+              <li
+                key={note.id}
+                className="flex flex-col gap-1 text-sm border-t border-gray-100 pt-4"
+              >
+                <div className="flex gap-4 text-sm">
+                  <span>향미 {note.aroma}</span>
+                  <span>산미 {note.acidity}</span>
+                  <span>바디 {note.body}</span>
+                </div>
+                {note.roast_date && (
+                  <p className="text-xs text-gray-400">로스팅일 {note.roast_date}</p>
+                )}
+                {note.memo && <p className="text-gray-600 text-sm">{note.memo}</p>}
+                <p className="text-xs text-gray-400">
+                  @{note.profiles?.username ?? '알 수 없음'} ·{' '}
+                  {new Date(note.created_at).toLocaleDateString('ko-KR')}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-gray-400">아직 커핑 노트가 없어요</p>
+        )}
       </div>
     </main>
   )
