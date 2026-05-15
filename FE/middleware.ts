@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const PUBLIC_ROUTES = ['/auth']
-const PROTECTED_ROUTES = ['/beans/new', '/notes/new', '/profile']
+const PROTECTED_ROUTES = ['/beans/new', '/cupping/new', '/notes/new', '/profile']
 
 function isPublicRoute(pathname: string) {
   return PUBLIC_ROUTES.some((route) => pathname.startsWith(route))
