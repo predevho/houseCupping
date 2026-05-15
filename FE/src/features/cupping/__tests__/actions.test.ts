@@ -76,6 +76,42 @@ describe('createCuppingAction', () => {
     expect(mockRedirect).toHaveBeenCalledWith('/beans/bean-123')
   })
 
+  it('cupping_notes insert 실패 시 general 에러를 반환한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-id' } } }),
+      },
+      from: jest.fn().mockImplementation((table: string) => {
+        if (table === 'cupping_notes')
+          return { insert: jest.fn().mockResolvedValue({ error: new Error('DB error') }) }
+        return {}
+      }),
+    })
+
+    const fd = makeFormData(validBase)
+    const result = await createCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { general: '잠시 후 다시 시도해주세요' } })
+  })
+
+  it('bean_ratings upsert 실패 시 general 에러를 반환한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-id' } } }),
+      },
+      from: jest.fn().mockImplementation((table: string) => {
+        if (table === 'cupping_notes')
+          return { insert: jest.fn().mockResolvedValue({ error: null }) }
+        if (table === 'bean_ratings')
+          return { upsert: jest.fn().mockResolvedValue({ error: new Error('DB error') }) }
+        return {}
+      }),
+    })
+
+    const fd = makeFormData({ ...validBase, score: '4.0' })
+    const result = await createCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { general: '잠시 후 다시 시도해주세요' } })
+  })
+
   it('score 없으면 bean_ratings upsert를 호출하지 않는다', async () => {
     const mockFrom = jest.fn().mockImplementation((table: string) => {
       if (table === 'cupping_notes')
