@@ -10,16 +10,11 @@ export default async function ProfilePage() {
 
   if (!user) redirect('/auth')
 
-  const profileResult = await supabase
+  const { data: profile } = await supabase
     .from('profiles')
     .select('username, display_name, created_at')
     .eq('id', user.id)
     .single()
-  const profile = profileResult.data as {
-    username: string
-    display_name: string
-    created_at: string
-  } | null
 
   if (!profile) redirect('/auth')
 

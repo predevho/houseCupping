@@ -44,7 +44,7 @@ describe('updateProfileAction', () => {
         select: () => ({
           eq: () => ({
             neq: () => ({
-              single: () => Promise.resolve({ data: { id: 'other-id' } }),
+              maybeSingle: () => Promise.resolve({ data: { id: 'other-id' } }),
             }),
           }),
         }),
@@ -63,7 +63,7 @@ describe('updateProfileAction', () => {
         select: () => ({
           eq: () => ({
             neq: () => ({
-              single: () => Promise.resolve({ data: null }),
+              maybeSingle: () => Promise.resolve({ data: null }),
             }),
           }),
         }),
