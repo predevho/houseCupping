@@ -41,11 +41,13 @@ export default async function BeanDetailPage({ params }: Props) {
 
   const bean = data as unknown as BeanDetail
 
-  const { data: notesData } = await supabase
+  const { data: notesData, error: notesError } = await supabase
     .from('cupping_notes')
     .select('id, aroma, acidity, body, roast_date, memo, created_at, profiles(username)')
     .eq('bean_id', id)
     .order('created_at', { ascending: false })
+
+  if (notesError) console.error('cupping_notes query error:', notesError)
 
   const notes = (notesData ?? []) as unknown as CuppingNote[]
 
