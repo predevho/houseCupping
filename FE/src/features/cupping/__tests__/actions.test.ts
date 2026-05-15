@@ -20,6 +20,18 @@ const validBase = { bean_id: 'bean-123', aroma: '4.0', acidity: '3.5', body: '3.
 describe('createCuppingAction', () => {
   beforeEach(() => jest.clearAllMocks())
 
+  it('bean_id가 없으면 general 에러를 반환한다', async () => {
+    const fd = makeFormData({ aroma: '4.0', acidity: '3.5', body: '3.0' })
+    const result = await createCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { general: '원두 정보가 없습니다' } })
+  })
+
+  it('aroma가 비어있으면 required 에러를 반환한다', async () => {
+    const fd = makeFormData({ bean_id: 'bean-123', aroma: '', acidity: '3.5', body: '3.0' })
+    const result = await createCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { aroma: '향미를 선택해주세요' } })
+  })
+
   it('aroma가 범위를 벗어나면 에러를 반환한다', async () => {
     const fd = makeFormData({ ...validBase, aroma: '6.0' })
     const result = await createCuppingAction(null, fd)

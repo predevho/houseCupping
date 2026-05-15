@@ -22,9 +22,21 @@ export async function createCuppingAction(
   formData: FormData
 ): Promise<CreateCuppingState> {
   const bean_id = formData.get('bean_id') as string
-  const aroma = Number(formData.get('aroma'))
-  const acidity = Number(formData.get('acidity'))
-  const body = Number(formData.get('body'))
+  if (!bean_id) {
+    return { errors: { general: '원두 정보가 없습니다' } }
+  }
+
+  const aromaRaw = formData.get('aroma') as string
+  const acidityRaw = formData.get('acidity') as string
+  const bodyRaw = formData.get('body') as string
+
+  if (!aromaRaw) return { errors: { aroma: '향미를 선택해주세요' } }
+  if (!acidityRaw) return { errors: { acidity: '산미를 선택해주세요' } }
+  if (!bodyRaw) return { errors: { body: '바디를 선택해주세요' } }
+
+  const aroma = Number(aromaRaw)
+  const acidity = Number(acidityRaw)
+  const body = Number(bodyRaw)
   const roast_date = (formData.get('roast_date') as string) || null
   const memo = (formData.get('memo') as string) || null
   const scoreRaw = formData.get('score') as string
