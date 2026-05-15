@@ -44,7 +44,7 @@ export async function updateProfileAction(
     .select('id')
     .eq('username', username)
     .neq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (existing) {
     return { errors: { username: '이미 사용 중인 아이디입니다' } }
