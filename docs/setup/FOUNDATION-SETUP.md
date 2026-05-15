@@ -83,6 +83,8 @@ agent-coding/
 | `src/app/globals.css` | Tailwind v4 + ShadCN 테마 + DaisyUI |
 | `src/features/member/EditForm.tsx` | 프로필 수정 폼 Client Component |
 | `src/features/member/actions.ts` | 프로필 수정 Server Action |
+| `src/features/bean/BeanForm.tsx` | 원두 등록 폼 Client Component |
+| `src/features/bean/actions.ts` | 원두 등록 Server Action |
 
 ---
 
@@ -132,6 +134,8 @@ agent-coding/
 | 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
 | 내 프로필 조회·수정 (`/profile`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 타인 프로필 조회 (`/profile/[username]`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
+| 원두 등록 (`/beans/new`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 상세 조회 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 
 ---
 
