@@ -52,7 +52,7 @@ export async function updateProfileAction(
 
   const { error } = await supabase
     .from('profiles')
-    .update({ username, display_name })
+    .update({ username, display_name } as never)
     .eq('id', user.id)
 
   if (error) {
