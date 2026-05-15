@@ -1,1 +1,11 @@
 .superpowers/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# 내부 문서 (비공개)
+docs/logs/
+docs/todo/
+docs/CONTEXT.md
+docs/superpowers/
