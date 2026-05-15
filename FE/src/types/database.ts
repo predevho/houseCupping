@@ -20,6 +20,7 @@ export type Database = {
           username?: string
           display_name?: string
         }
+        Relationships: []
       }
       beans: {
         Row: {
@@ -55,6 +56,7 @@ export type Database = {
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['beans']['Insert']>
+        Relationships: []
       }
       cupping_notes: {
         Row: {
@@ -80,6 +82,7 @@ export type Database = {
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['cupping_notes']['Insert']>
+        Relationships: []
       }
       bean_ratings: {
         Row: {
@@ -97,6 +100,7 @@ export type Database = {
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['bean_ratings']['Insert']>
+        Relationships: []
       }
       likes: {
         Row: {
@@ -112,6 +116,7 @@ export type Database = {
           created_at?: string
         }
         Update: never
+        Relationships: []
       }
       comments: {
         Row: {
@@ -129,7 +134,10 @@ export type Database = {
           created_at?: string
         }
         Update: { content: string }
+        Relationships: []
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
   }
 }
