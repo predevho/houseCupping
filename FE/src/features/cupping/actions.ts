@@ -1,0 +1,74 @@
+'use server'
+
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+
+export type CreateCuppingState = {
+  errors?: {
+    aroma?: string
+    acidity?: string
+    body?: string
+    score?: string
+    general?: string
+  }
+} | null
+
+function isValidScore(v: number): boolean {
+  return v >= 0.5 && v <= 5.0 && Number.isInteger(v * 2)
+}
+
+export async function createCuppingAction(
+  _state: CreateCuppingState,
+  formData: FormData
+): Promise<CreateCuppingState> {
+  const bean_id = formData.get('bean_id') as string
+  const aroma = Number(formData.get('aroma'))
+  const acidity = Number(formData.get('acidity'))
+  const body = Number(formData.get('body'))
+  const roast_date = (formData.get('roast_date') as string) || null
+  const memo = (formData.get('memo') as string) || null
+  const scoreRaw = formData.get('score') as string
+  const score = scoreRaw ? Number(scoreRaw) : null
+
+  if (!isValidScore(aroma)) {
+    return { errors: { aroma: '향미는 0.5~5.0 사이로 입력해주세요' } }
+  }
+  if (!isValidScore(acidity)) {
+    return { errors: { acidity: '산미는 0.5~5.0 사이로 입력해주세요' } }
+  }
+  if (!isValidScore(body)) {
+    return { errors: { body: '바디는 0.5~5.0 사이로 입력해주세요' } }
+  }
+  if (score !== null && !isValidScore(score)) {
+    return { errors: { score: '평점은 0.5~5.0 사이로 입력해주세요' } }
+  }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { errors: { general: '로그인이 필요합니다' } }
+  }
+
+  const { error: noteError } = await supabase
+    .from('cupping_notes')
+    .insert({ user_id: user.id, bean_id, aroma, acidity, body, roast_date, memo })
+
+  if (noteError) {
+    return { errors: { general: '잠시 후 다시 시도해주세요' } }
+  }
+
+  if (score !== null) {
+    const { error: ratingError } = await supabase
+      .from('bean_ratings')
+      .upsert({ user_id: user.id, bean_id, score }, { onConflict: 'user_id,bean_id' })
+
+    if (ratingError) {
+      return { errors: { general: '잠시 후 다시 시도해주세요' } }
+    }
+  }
+
+  redirect(`/beans/${bean_id}`)
+}
