@@ -74,6 +74,10 @@ agent-coding/
 | `src/lib/supabase/server.ts` | 서버용 Supabase 클라이언트 |
 | `src/types/database.ts` | DB 타입 전체 정의 |
 | `middleware.ts` | 세션 갱신 + 라우트 보호 (PUBLIC_ROUTES: `['/auth']`) |
+| `src/app/(app)/layout.tsx` | 인증된 페이지 공통 레이아웃 (Header 포함) |
+| `src/app/(app)/_actions/logout.ts` | 로그아웃 Server Action |
+| `src/components/layout/Header.tsx` | 공통 헤더 Server Component |
+| `src/components/layout/LogoutButton.tsx` | 로그아웃 버튼 Client Component |
 | `src/components/ui/` | ShadCN 컴포넌트 |
 | `src/lib/utils.ts` | ShadCN 유틸 (cn 함수) |
 | `src/app/globals.css` | Tailwind v4 + ShadCN 테마 + DaisyUI |
