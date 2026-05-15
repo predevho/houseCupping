@@ -81,6 +81,8 @@ agent-coding/
 | `src/components/ui/` | ShadCN 컴포넌트 |
 | `src/lib/utils.ts` | ShadCN 유틸 (cn 함수) |
 | `src/app/globals.css` | Tailwind v4 + ShadCN 테마 + DaisyUI |
+| `src/features/member/EditForm.tsx` | 프로필 수정 폼 Client Component |
+| `src/features/member/actions.ts` | 프로필 수정 Server Action |
 
 ---
 
@@ -128,6 +130,8 @@ agent-coding/
 |---|---|
 | 인증 UI (`/auth` — 로그인·회원가입 탭) | `docs/features/AUTH-IMPLEMENTATION.md` |
 | 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
+| 내 프로필 조회·수정 (`/profile`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
+| 타인 프로필 조회 (`/profile/[username]`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 
 ---
 
