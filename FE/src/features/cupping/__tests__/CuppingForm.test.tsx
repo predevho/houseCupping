@@ -62,7 +62,7 @@ describe('CuppingForm', () => {
     expect(screen.getByRole('button', { name: '커핑 노트 등록' })).toBeEnabled()
   })
 
-  it('initialValues가 있으면 aroma select의 defaultValue가 설정된다', () => {
+  it('initialValues가 있으면 aroma/acidity/body select의 defaultValue가 설정된다', () => {
     const initialValues = {
       aroma: 4.0,
       acidity: 3.5,
@@ -74,5 +74,9 @@ describe('CuppingForm', () => {
     render(<CuppingForm {...defaultProps} noteId="note-1" initialValues={initialValues} />)
     const aromaSelect = screen.getByLabelText(/향미/) as HTMLSelectElement
     expect(aromaSelect.value).toBe('4')
+    const aciditySelect = screen.getByLabelText(/산미/) as HTMLSelectElement
+    expect(aciditySelect.value).toBe('3.5')
+    const bodySelect = screen.getByLabelText(/바디/) as HTMLSelectElement
+    expect(bodySelect.value).toBe('3')
   })
 })
