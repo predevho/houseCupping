@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
-export type CreateCuppingState = {
+export type CuppingFormState = {
   errors?: {
     aroma?: string
     acidity?: string
@@ -18,9 +18,9 @@ function isValidScore(v: number): boolean {
 }
 
 export async function createCuppingAction(
-  _state: CreateCuppingState,
+  _state: CuppingFormState,
   formData: FormData
-): Promise<CreateCuppingState> {
+): Promise<CuppingFormState> {
   const bean_id = formData.get('bean_id') as string
   if (!bean_id) {
     return { errors: { general: '원두 정보가 없습니다' } }

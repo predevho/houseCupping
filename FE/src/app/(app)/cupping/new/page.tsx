@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import CuppingForm from '@/features/cupping/CuppingForm'
+import { createCuppingAction } from '@/features/cupping/actions'
 
 interface Props {
   searchParams: Promise<{ beanId?: string }>
@@ -25,7 +26,12 @@ export default async function CuppingNewPage({ searchParams }: Props) {
   return (
     <main className="max-w-md mx-auto px-4 py-8">
       <h1 className="text-lg font-bold mb-6">커핑 노트 등록</h1>
-      <CuppingForm beanId={beanId} beanLabel={beanLabel} />
+      <CuppingForm
+        beanId={beanId}
+        beanLabel={beanLabel}
+        action={createCuppingAction}
+        submitLabel="커핑 노트 등록"
+      />
     </main>
   )
 }

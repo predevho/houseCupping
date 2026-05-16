@@ -1,24 +1,45 @@
 'use client'
 
 import { useActionState } from 'react'
-import { createCuppingAction, type CreateCuppingState } from './actions'
+import { type CuppingFormState } from './actions'
 
 const SCORE_OPTIONS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
 
-interface Props {
-  beanId: string
-  beanLabel: string
+interface CuppingFormInitialValues {
+  aroma: number
+  acidity: number
+  body: number
+  roast_date: string | null
+  memo: string | null
+  score: number | null
 }
 
-export default function CuppingForm({ beanId, beanLabel }: Props) {
-  const [state, action, isPending] = useActionState<CreateCuppingState, FormData>(
-    createCuppingAction,
+interface Props {
+  beanId?: string
+  noteId?: string
+  beanLabel: string
+  initialValues?: CuppingFormInitialValues
+  action: (state: CuppingFormState, formData: FormData) => Promise<CuppingFormState>
+  submitLabel: string
+}
+
+export default function CuppingForm({
+  beanId,
+  noteId,
+  beanLabel,
+  initialValues,
+  action,
+  submitLabel,
+}: Props) {
+  const [state, formAction, isPending] = useActionState<CuppingFormState, FormData>(
+    action,
     null
   )
 
   return (
-    <form action={action} className="flex flex-col gap-3">
-      <input type="hidden" name="bean_id" value={beanId} />
+    <form action={formAction} className="flex flex-col gap-3">
+      {beanId && <input type="hidden" name="bean_id" value={beanId} />}
+      {noteId && <input type="hidden" name="note_id" value={noteId} />}
 
       <p className="text-sm text-gray-500">{beanLabel}</p>
 
@@ -30,7 +51,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
           id="aroma"
           name="aroma"
           required
-          defaultValue=""
+          defaultValue={initialValues?.aroma?.toString() ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         >
           <option value="" disabled>선택</option>
@@ -53,7 +74,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
           id="acidity"
           name="acidity"
           required
-          defaultValue=""
+          defaultValue={initialValues?.acidity?.toString() ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         >
           <option value="" disabled>선택</option>
@@ -76,7 +97,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
           id="body"
           name="body"
           required
-          defaultValue=""
+          defaultValue={initialValues?.body?.toString() ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         >
           <option value="" disabled>선택</option>
@@ -99,6 +120,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
           id="roast_date"
           name="roast_date"
           type="date"
+          defaultValue={initialValues?.roast_date ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         />
       </div>
@@ -111,6 +133,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
           id="memo"
           name="memo"
           rows={3}
+          defaultValue={initialValues?.memo ?? ''}
           className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none resize-none"
         />
       </div>
@@ -122,7 +145,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
         <select
           id="score"
           name="score"
-          defaultValue=""
+          defaultValue={initialValues?.score?.toString() ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         >
           <option value="">선택 안 함</option>
@@ -148,7 +171,7 @@ export default function CuppingForm({ beanId, beanLabel }: Props) {
         disabled={isPending}
         className="h-10 bg-[#8B2635] text-white rounded-md text-sm font-semibold disabled:opacity-50"
       >
-        {isPending ? '등록 중...' : '커핑 노트 등록'}
+        {isPending ? '처리 중...' : submitLabel}
       </button>
     </form>
   )
