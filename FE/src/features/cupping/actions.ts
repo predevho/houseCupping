@@ -93,11 +93,13 @@ export async function deleteCuppingAction(noteId: string, beanId: string): Promi
 
   if (!user) return
 
-  await supabase
+  const { error } = await supabase
     .from('cupping_notes')
     .delete()
     .eq('id', noteId)
     .eq('user_id', user.id)
+
+  if (error) throw new Error(error.message)
 
   redirect(`/beans/${beanId}`)
 }
