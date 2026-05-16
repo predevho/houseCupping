@@ -23,29 +23,29 @@ export default async function CuppingEditPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
 
-  const { data } = await supabase
-    .from('cupping_notes')
-    .select('id, user_id, bean_id, aroma, acidity, body, roast_date, memo, beans(bean_name, cafe_name)')
-    .eq('id', id)
-    .maybeSingle()
+  const [{ data }, { data: authData }] = await Promise.all([
+    supabase
+      .from('cupping_notes')
+      .select('id, user_id, bean_id, aroma, acidity, body, roast_date, memo, beans(bean_name, cafe_name)')
+      .eq('id', id)
+      .maybeSingle(),
+    supabase.auth.getUser(),
+  ])
 
   if (!data) notFound()
 
   const note = data as unknown as CuppingNoteForEdit
 
-  const [{ data: ratingData }, { data: authData }] = await Promise.all([
-    supabase
-      .from('bean_ratings')
-      .select('score')
-      .eq('user_id', note.user_id)
-      .eq('bean_id', note.bean_id)
-      .maybeSingle(),
-    supabase.auth.getUser(),
-  ])
-
   if (authData.user?.id !== note.user_id) {
     redirect(`/cupping/${id}`)
   }
+
+  const { data: ratingData } = await supabase
+    .from('bean_ratings')
+    .select('score')
+    .eq('user_id', note.user_id)
+    .eq('bean_id', note.bean_id)
+    .maybeSingle()
 
   const beanLabel = note.beans
     ? `${note.beans.bean_name} — ${note.beans.cafe_name}`
