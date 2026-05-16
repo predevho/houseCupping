@@ -102,7 +102,17 @@ export default async function CuppingDetailPage({ params }: Props) {
         <span>{createdAt}</span>
       </div>
 
-      {isOwner && <DeleteButton noteId={note.id} beanId={note.bean_id} />}
+      {isOwner && (
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/cupping/${note.id}/edit`}
+            className="text-xs text-gray-500 font-semibold"
+          >
+            수정
+          </Link>
+          <DeleteButton noteId={note.id} beanId={note.bean_id} />
+        </div>
+      )}
     </main>
   )
 }
