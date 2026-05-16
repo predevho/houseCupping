@@ -84,3 +84,20 @@ export async function createCuppingAction(
 
   redirect(`/beans/${bean_id}`)
 }
+
+export async function deleteCuppingAction(noteId: string, beanId: string): Promise<void> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return
+
+  await supabase
+    .from('cupping_notes')
+    .delete()
+    .eq('id', noteId)
+    .eq('user_id', user.id)
+
+  redirect(`/beans/${beanId}`)
+}

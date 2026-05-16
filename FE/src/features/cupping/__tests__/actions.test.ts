@@ -1,4 +1,4 @@
-import { createCuppingAction } from '../actions'
+import { createCuppingAction, deleteCuppingAction } from '../actions'
 
 jest.mock('@/lib/supabase/server', () => ({ createClient: jest.fn() }))
 jest.mock('next/navigation', () => ({ redirect: jest.fn() }))
@@ -129,5 +129,34 @@ describe('createCuppingAction', () => {
     await createCuppingAction(null, fd)
     expect(mockFrom).not.toHaveBeenCalledWith('bean_ratings')
     expect(mockRedirect).toHaveBeenCalledWith('/beans/bean-123')
+  })
+})
+
+describe('deleteCuppingAction', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('비로그인 시 redirect를 호출하지 않는다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
+      from: jest.fn(),
+    })
+    await deleteCuppingAction('note-1', 'bean-1')
+    expect(mockRedirect).not.toHaveBeenCalled()
+  })
+
+  it('성공 시 cupping_notes를 삭제하고 redirect를 호출한다', async () => {
+    const mockEqInner = jest.fn().mockResolvedValue({ error: null })
+    const mockEqOuter = jest.fn().mockReturnValue({ eq: mockEqInner })
+    const mockDelete = jest.fn().mockReturnValue({ eq: mockEqOuter })
+    mockCreateClient.mockResolvedValue({
+      auth: { getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } }) },
+      from: jest.fn().mockReturnValue({ delete: mockDelete }),
+    })
+
+    await deleteCuppingAction('note-1', 'bean-1')
+
+    expect(mockEqOuter).toHaveBeenCalledWith('id', 'note-1')
+    expect(mockEqInner).toHaveBeenCalledWith('user_id', 'user-1')
+    expect(mockRedirect).toHaveBeenCalledWith('/beans/bean-1')
   })
 })
