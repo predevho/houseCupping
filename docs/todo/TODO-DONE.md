@@ -36,3 +36,11 @@
 - [x] 타인 프로필 페이지 (`/profile/[username]`) — `docs/features/MEMBER-IMPLEMENTATION.md`
 - [x] 원두 등록 폼 (`/beans/new`) — `docs/features/BEAN-IMPLEMENTATION.md`
 - [x] 원두 상세 페이지 (`/beans/[id]`) — `docs/features/BEAN-IMPLEMENTATION.md`
+- [x] DB 마이그레이션 — bean_ratings score 범위 0.5~5.0 (migration 014)
+- [x] DB 마이그레이션 — cupping_notes aroma/acidity/body NUMERIC 0.5~5.0 (migration 015)
+- [x] seed.sql — 테스트 계정 auth.identities 추가 (GoTrue 이메일 인증 수정)
+- [x] 커핑 노트 등록 Server Action (`createCuppingAction`) — `docs/features/CUPPING-IMPLEMENTATION.md`
+- [x] 커핑 노트 등록 폼 (`CuppingForm.tsx`) — `docs/features/CUPPING-IMPLEMENTATION.md`
+- [x] 커핑 노트 등록 페이지 (`/cupping/new`) — `docs/features/CUPPING-IMPLEMENTATION.md`
+- [x] 원두 상세 커핑 노트 목록 (`/beans/[id]` 업데이트) — `docs/features/BEAN-IMPLEMENTATION.md`
+- [x] 커핑 노트 상세 페이지 (`/cupping/[id]`) — 2026-05-16
