@@ -197,7 +197,8 @@ describe('updateCuppingAction', () => {
   })
 
   it('성공 시 cupping_notes를 update하고 redirect를 호출한다', async () => {
-    const mockEq2 = jest.fn().mockResolvedValue({ error: null })
+    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null })
+    const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
     const mockFrom = jest.fn().mockReturnValue({ update: mockUpdate })
@@ -210,11 +211,14 @@ describe('updateCuppingAction', () => {
     await updateCuppingAction(null, fd)
 
     expect(mockFrom).toHaveBeenCalledWith('cupping_notes')
+    expect(mockEq1).toHaveBeenCalledWith('id', 'note-1')
+    expect(mockEq2).toHaveBeenCalledWith('user_id', 'user-1')
     expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')
   })
 
   it('score 있으면 bean_ratings upsert를 호출한다', async () => {
-    const mockEq2 = jest.fn().mockResolvedValue({ error: null })
+    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null })
+    const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
     const mockUpsert = jest.fn().mockResolvedValue({ error: null })
@@ -239,8 +243,33 @@ describe('updateCuppingAction', () => {
     expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')
   })
 
+  it('bean_id가 없으면 score가 있어도 bean_ratings upsert를 호출하지 않는다', async () => {
+    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null })
+    const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
+    const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
+    const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
+    const mockUpsert = jest.fn()
+    const mockFrom = jest.fn().mockImplementation((table: string) => {
+      if (table === 'cupping_notes') return { update: mockUpdate }
+      if (table === 'bean_ratings') return { upsert: mockUpsert }
+      return {}
+    })
+    mockCreateClient.mockResolvedValue({
+      auth: { getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } }) },
+      from: mockFrom,
+    })
+
+    // note: no bean_id in formData
+    const fd = makeFormData({ note_id: 'note-1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
+    await updateCuppingAction(null, fd)
+
+    expect(mockUpsert).not.toHaveBeenCalled()
+    expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')
+  })
+
   it('UPDATE 실패 시 general 에러를 반환한다', async () => {
-    const mockEq2 = jest.fn().mockResolvedValue({ error: new Error('DB error') })
+    const mockSelect = jest.fn().mockResolvedValue({ data: null, error: new Error('DB error') })
+    const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
     mockCreateClient.mockResolvedValue({
