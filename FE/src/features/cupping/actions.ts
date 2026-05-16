@@ -140,13 +140,15 @@ export async function updateCuppingAction(
 
   if (!user) return { errors: { general: '로그인이 필요합니다' } }
 
-  const { error: updateError } = await supabase
+  const { data: updatedRows, error: updateError } = await supabase
     .from('cupping_notes')
     .update({ aroma, acidity, body, roast_date, memo })
     .eq('id', note_id)
     .eq('user_id', user.id)
+    .select('id')
 
   if (updateError) return { errors: { general: '잠시 후 다시 시도해주세요' } }
+  if (!updatedRows || updatedRows.length === 0) return { errors: { general: '노트를 찾을 수 없습니다' } }
 
   if (score !== null && bean_id) {
     const { error: ratingError } = await supabase
