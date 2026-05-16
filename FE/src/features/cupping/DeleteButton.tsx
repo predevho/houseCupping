@@ -13,6 +13,7 @@ export default function DeleteButton({ noteId, beanId }: Props) {
 
   return (
     <button
+      type="button"
       disabled={isPending}
       onClick={() => startTransition(() => deleteCuppingAction(noteId, beanId))}
       className="text-xs text-red-500 font-semibold"
