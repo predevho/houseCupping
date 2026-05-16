@@ -13,7 +13,7 @@ interface CuppingNoteDetail {
   roast_date: string | null
   memo: string | null
   created_at: string
-  profiles: { username: string; display_name: string } | null
+  profiles: { username: string } | null
   beans: { id: string; bean_name: string; cafe_name: string } | null
 }
 
@@ -27,7 +27,7 @@ export default async function CuppingDetailPage({ params }: Props) {
 
   const { data } = await supabase
     .from('cupping_notes')
-    .select('*, profiles(username, display_name), beans(id, bean_name, cafe_name)')
+    .select('id, user_id, bean_id, aroma, acidity, body, roast_date, memo, created_at, profiles(username), beans(id, bean_name, cafe_name)')
     .eq('id', id)
     .maybeSingle()
 
@@ -35,7 +35,7 @@ export default async function CuppingDetailPage({ params }: Props) {
 
   const note = data as unknown as CuppingNoteDetail
 
-  const [{ data: ratingData }, { data: authData }] = await Promise.all([
+  const [{ data: ratingData, error: ratingError }, { data: authData }] = await Promise.all([
     supabase
       .from('bean_ratings')
       .select('score')
@@ -44,6 +44,8 @@ export default async function CuppingDetailPage({ params }: Props) {
       .maybeSingle(),
     supabase.auth.getUser(),
   ])
+
+  if (ratingError) console.error('bean_ratings query error:', ratingError)
 
   const isOwner = authData.user?.id === note.user_id
 
@@ -89,9 +91,13 @@ export default async function CuppingDetailPage({ params }: Props) {
       {note.memo && <p className="text-sm text-gray-700">{note.memo}</p>}
 
       <div className="text-xs text-gray-400 flex items-center gap-1">
-        <Link href={`/profile/${note.profiles?.username}`}>
-          @{note.profiles?.username ?? '알 수 없음'}
-        </Link>
+        {note.profiles?.username ? (
+          <Link href={`/profile/${note.profiles.username}`}>
+            @{note.profiles.username}
+          </Link>
+        ) : (
+          <span>@알 수 없음</span>
+        )}
         <span>·</span>
         <span>{createdAt}</span>
       </div>
