@@ -81,7 +81,7 @@ export default async function CuppingDetailPage({ params }: Props) {
       </div>
 
       {ratingData?.score != null && (
-        <p className="text-sm text-gray-500">종합 평점 {ratingData.score}</p>
+        <p className="text-sm text-gray-500">작성자 종합 평점 {ratingData.score}</p>
       )}
 
       {note.roast_date && (
