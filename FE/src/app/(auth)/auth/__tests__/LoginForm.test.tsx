@@ -40,4 +40,10 @@ describe('LoginForm', () => {
     render(<LoginForm />)
     expect(screen.getByRole('button', { name: '로그인 중...' })).toBeDisabled()
   })
+
+  it('next가 있으면 hidden input으로 전달한다', () => {
+    render(<LoginForm next="/cupping/12" />)
+    expect(screen.getByDisplayValue('/cupping/12')).toHaveAttribute('type', 'hidden')
+    expect(screen.getByDisplayValue('/cupping/12')).toHaveAttribute('name', 'next')
+  })
 })

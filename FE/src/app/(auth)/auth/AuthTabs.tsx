@@ -6,7 +6,11 @@ import SignupForm from './SignupForm'
 
 type Tab = 'login' | 'signup'
 
-export default function AuthTabs() {
+interface Props {
+  next?: string
+}
+
+export default function AuthTabs({ next }: Props) {
   const [tab, setTab] = useState<Tab>('login')
 
   return (
@@ -36,7 +40,7 @@ export default function AuthTabs() {
         </button>
       </div>
 
-      {tab === 'login' ? <LoginForm /> : <SignupForm />}
+      {tab === 'login' ? <LoginForm next={next} /> : <SignupForm next={next} />}
     </div>
   )
 }

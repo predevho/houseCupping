@@ -2,7 +2,12 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import AuthTabs from './AuthTabs'
 
-export default async function AuthPage() {
+interface Props {
+  searchParams: Promise<{ next?: string }>
+}
+
+export default async function AuthPage({ searchParams }: Props) {
+  const { next } = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -27,7 +32,7 @@ export default async function AuthPage() {
         </div>
 
         {/* 오른쪽 폼 영역 */}
-        <AuthTabs />
+        <AuthTabs next={next} />
       </div>
     </div>
   )

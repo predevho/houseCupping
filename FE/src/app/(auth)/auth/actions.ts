@@ -13,10 +13,23 @@ export type SignupState = {
   }
 } | null
 
+function sanitizeNextPath(value: FormDataEntryValue | null): string {
+  if (typeof value !== 'string') return '/'
+
+  const next = value.trim()
+
+  if (!next.startsWith('/') || next.startsWith('//')) {
+    return '/'
+  }
+
+  return next
+}
+
 export async function loginAction(
   _state: LoginState,
   formData: FormData
 ): Promise<LoginState> {
+  const next = sanitizeNextPath(formData.get('next'))
   const username = formData.get('username') as string
   const password = formData.get('password') as string
 
@@ -46,13 +59,14 @@ export async function loginAction(
     return { error: '아이디 또는 비밀번호가 올바르지 않습니다' }
   }
 
-  redirect('/')
+  redirect(next)
 }
 
 export async function signupAction(
   _state: SignupState,
   formData: FormData
 ): Promise<SignupState> {
+  const next = sanitizeNextPath(formData.get('next'))
   const username = formData.get('username') as string
   const display_name = formData.get('display_name') as string
   const email = formData.get('email') as string
@@ -87,5 +101,5 @@ export async function signupAction(
     return { errors: { general: '잠시 후 다시 시도해주세요' } }
   }
 
-  redirect('/')
+  redirect(next)
 }

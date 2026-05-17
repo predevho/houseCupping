@@ -49,4 +49,10 @@ describe('SignupForm', () => {
     render(<SignupForm />)
     expect(screen.getByRole('button', { name: '가입 중...' })).toBeDisabled()
   })
+
+  it('next가 있으면 hidden input으로 전달한다', () => {
+    render(<SignupForm next="/cupping/12" />)
+    expect(screen.getByDisplayValue('/cupping/12')).toHaveAttribute('type', 'hidden')
+    expect(screen.getByDisplayValue('/cupping/12')).toHaveAttribute('name', 'next')
+  })
 })
