@@ -6,10 +6,11 @@ import { signupAction, type SignupState } from './actions'
 const fieldClass = (hasError: boolean) =>
   `w-full h-10 px-3 bg-gray-50 border rounded-md text-sm outline-none transition-all
    focus:border-[#8B2635] focus:ring-2 focus:ring-[#8B2635]/15
-   ${hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'}`
+   dark:bg-gray-800 dark:text-gray-100
+   ${hasError ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700' : 'border-gray-200 dark:border-gray-700'}`
 
 const labelWrapClass = 'flex items-center gap-0.5 mb-1.5'
-const labelClass = 'text-xs font-semibold text-gray-500'
+const labelClass = 'text-xs font-semibold text-gray-500 dark:text-gray-400'
 
 interface Props {
   next?: string
@@ -78,7 +79,7 @@ export default function SignupForm({ next }: Props) {
           required
           className={fieldClass(!!state?.errors?.username)}
         />
-        <p className="text-[10px] text-gray-400 mt-1">영문, 숫자, _, - 만 사용 (4~16자)</p>
+        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">영문, 숫자, _, - 만 사용 (4~16자)</p>
         {state?.errors?.username && (
           <p role="alert" className="text-[10px] text-red-600 mt-1">
             <span aria-hidden>⚠</span> {state.errors.username}
@@ -99,7 +100,7 @@ export default function SignupForm({ next }: Props) {
           required
           className={fieldClass(false)}
         />
-        <p className="text-[10px] text-gray-400 mt-1">4~12자</p>
+        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">4~12자</p>
       </div>
 
       {/* 이메일 */}
@@ -161,7 +162,7 @@ export default function SignupForm({ next }: Props) {
       </div>
 
       {state?.errors?.general && (
-        <div role="alert" className="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs text-red-600 flex items-center gap-1.5">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs text-red-600 flex items-center gap-1.5 dark:bg-red-900/20 dark:border-red-700 dark:text-red-400">
           <span aria-hidden>⚠</span> {state.errors.general}
         </div>
       )}
