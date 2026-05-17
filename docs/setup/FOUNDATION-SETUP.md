@@ -6,6 +6,7 @@
 agent-coding/
 ├── FE/                          # Next.js 15 프론트엔드
 ├── BE/                          # Supabase 백엔드
+│   └── supabase/                # canonical Supabase project root
 ├── docs/                        # 내부 문서 (gitignore)
 │   ├── CONTEXT.md
 │   ├── setup/        → 세팅 문서
@@ -34,6 +35,9 @@ agent-coding/
 ---
 
 ## BE — Supabase 마이그레이션 (15개)
+
+- 마이그레이션과 `config.toml`, `seed.sql`의 기준 위치는 `BE/supabase/`이다.
+- 루트 `/supabase` 폴더는 Supabase CLI가 생성한 로컬 메타데이터일 수 있으며, 프로젝트 기준 경로로 사용하지 않는다.
 
 | 파일 | 내용 |
 |---|---|
@@ -77,7 +81,10 @@ agent-coding/
 | `src/types/database.ts` | DB 타입 전체 정의 |
 | `middleware.ts` | 세션 갱신 + 라우트 보호 (PUBLIC_ROUTES: `['/auth']`) |
 | `src/app/(app)/layout.tsx` | 인증된 페이지 공통 레이아웃 (Header 포함) |
+| `src/app/(app)/error.tsx` | 인증된 페이지 공통 에러 UI |
+| `src/app/(app)/loading.tsx` | 인증된 페이지 공통 로딩 UI |
 | `src/app/(app)/_actions/logout.ts` | 로그아웃 Server Action |
+| `src/components/ui/toast.tsx` | 전역 Toast Provider + `useToast` 훅 |
 | `src/components/layout/Header.tsx` | 공통 헤더 Server Component |
 | `src/components/layout/LogoutButton.tsx` | 로그아웃 버튼 Client Component |
 | `src/components/ui/` | ShadCN 컴포넌트 |
@@ -134,10 +141,17 @@ agent-coding/
 |---|---|
 | 인증 UI (`/auth` — 로그인·회원가입 탭) | `docs/features/AUTH-IMPLEMENTATION.md` |
 | 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
+| 인증 영역 공통 에러 UI (`src/app/(app)/error.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
+| 인증 영역 공통 로딩 UI (`src/app/(app)/loading.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
+| 전역 Toast 알림 + 댓글 등록 연동 | `docs/setup/FOUNDATION-SETUP.md` |
+| 프로필 수정 UX 고도화 (입력 힌트, 길이 제한, 성공 토스트) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 내 프로필 조회·수정 (`/profile`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 타인 프로필 조회 (`/profile/[username]`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 원두 등록 (`/beans/new`) | `docs/features/BEAN-IMPLEMENTATION.md` |
-| 원두 상세 조회 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 수정 (`/beans/[id]/edit`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 목록 (`/beans`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 상세 조회 + 평균 평점 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 커핑 노트 목록 (`/cupping`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 등록 (`/cupping/new`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 상세 조회 (`/cupping/[id]`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 수정 (`/cupping/[id]/edit`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
@@ -151,4 +165,3 @@ agent-coding/
 
 - [ ] 커핑 노트 목록 페이지 (필터링, 정렬)
 - [ ] 원두 상세 평균 평점 집계 표시
-- [ ] 원두 목록 페이지 (검색, 필터링)

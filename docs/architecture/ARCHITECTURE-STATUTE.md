@@ -48,6 +48,8 @@ FE/src/
 - Supabase 쿼리 결과는 `{ data, error }` 구조로 반환됨
 - error가 존재하면 반드시 처리하고, null/undefined 데이터로 렌더링하지 않는다
 - 사용자에게 노출되는 에러 메시지는 한국어로 작성한다
+- 인증 영역 App Router 예외는 `src/app/(app)/error.tsx`에서 공통 UI로 처리한다
+- 인증 영역 App Router 로딩 상태는 `src/app/(app)/loading.tsx`에서 공통 UI로 처리한다
 
 ### 환경 변수
 
@@ -62,6 +64,7 @@ FE/src/
   - 필요한 컴포넌트만 선택적으로 추가 (`npx shadcn@latest add <component>`)
 - **DaisyUI**: 레이아웃, 뱃지, 카드 등 유틸리티성 스타일에 활용
 - 커스텀 CSS는 디자인 시스템으로 해결이 불가능한 경우에만 작성한다.
+- 전역 사용자 피드백은 `src/components/ui/toast.tsx`의 `ToastProvider`와 `useToast`를 우선 사용한다
 
 ### 마이그레이션 규칙 (BE)
 

@@ -19,8 +19,15 @@
 - `/profile/[username]`: 해당 username 사용자의 프로필 표시 (없으면 404)
 - username 수정 시 중복 확인 (자기 자신 제외, `.neq('id', user.id)`), 유효성 검사 (4~16자, 영문/숫자/_/-)
 - display_name 수정 시 유효성 검사 (4~12자)
-- 수정 성공 시 `revalidatePath('/profile')`로 페이지 갱신
+- 수정 성공 시 `revalidatePath('/profile')`로 페이지 갱신 + 성공 토스트 표시
 - username 중복 확인에 `.maybeSingle()` 사용 (없으면 null 반환)
+
+## 업데이트 내역
+
+### 2026-05-17 — 프로필 수정 UX 고도화
+- `EditForm`에 username/display_name 입력 힌트 추가
+- `minLength`, `maxLength`, `pattern` 속성으로 클라이언트 제약 명시
+- 수정 성공 시 `ToastProvider` 기반 성공 토스트 `프로필이 저장되었어요` 표시
 
 ## 범위 외 (추후 추가)
 

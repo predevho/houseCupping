@@ -2,7 +2,7 @@
 
 ## 개요
 
-커핑 노트 작성, 상세 조회, 수정, 삭제 기능 구현.
+커핑 노트 목록, 작성, 상세 조회, 수정, 삭제 기능 구현.
 
 ## 구현된 파일
 
@@ -10,13 +10,19 @@
 |------|------|
 | `src/features/cupping/actions.ts` | createCuppingAction, updateCuppingAction, deleteCuppingAction Server Action |
 | `src/features/cupping/CuppingForm.tsx` | 커핑 노트 작성·수정 폼 Client Component (create/edit 겸용) |
+| `src/features/cupping/CuppingFilters.tsx` | 커핑 노트 목록 필터·정렬 폼 Client Component |
 | `src/features/cupping/DeleteButton.tsx` | 삭제 버튼 Client Component |
+| `src/app/(app)/cupping/page.tsx` | 커핑 노트 목록 페이지 |
 | `src/app/(app)/cupping/new/page.tsx` | 커핑 노트 작성 페이지 |
 | `src/app/(app)/cupping/[id]/page.tsx` | 커핑 노트 상세 페이지 |
 | `src/app/(app)/cupping/[id]/edit/page.tsx` | 커핑 노트 수정 페이지 |
 
 ## 동작
 
+- `/cupping`: 커핑 노트 목록 표시
+  - `beanId`로 원두별 필터
+  - `sort=latest|oldest`로 최신순/오래된순 정렬
+  - 각 카드에서 원두 정보, 점수, 로스팅일, 메모 일부, 작성자/작성일 표시
 - `/cupping/new?beanId={id}`: 원두 선택 후 aroma/acidity/body/roast_date/memo/score 입력
   - 등록 성공 시 `/beans/{beanId}`로 redirect
 - `/cupping/[id]`: 커핑 노트 상세 표시
@@ -52,5 +58,4 @@ interface Props {
 ## 향후 계획
 
 - 메모(memo) 필드 마크다운 에디터로 전환 (현재 일반 textarea)
-- 커핑 노트 목록 페이지
 - 원두 상세 평균 평점 집계
