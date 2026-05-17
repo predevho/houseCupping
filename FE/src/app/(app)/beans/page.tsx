@@ -26,7 +26,8 @@ export default async function BeansPage({ searchParams }: Props) {
     query = query.or(`bean_name.ilike.%${q}%,cafe_name.ilike.%${q}%`)
   }
 
-  const { data } = await query
+  const { data, error } = await query
+  if (error) console.error('beans query error:', error)
   const beans = (data ?? []) as Bean[]
 
   return (
