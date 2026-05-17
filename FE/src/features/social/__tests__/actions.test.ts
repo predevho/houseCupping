@@ -76,6 +76,22 @@ describe('toggleLikeAction', () => {
     await toggleLikeAction('note-1')
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
+
+  it('delete 실패 시 revalidatePath를 호출하지 않는다', async () => {
+    const mockDeleteEq2 = jest.fn().mockResolvedValue({ error: new Error('DB error') })
+    const mockDeleteEq1 = jest.fn().mockReturnValue({ eq: mockDeleteEq2 })
+    const mockDelete = jest.fn().mockReturnValue({ eq: mockDeleteEq1 })
+    const mockMaybeSingle = jest.fn().mockResolvedValue({ data: { id: 'like-1' } })
+    const mockSelectEq2 = jest.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
+    const mockSelectEq1 = jest.fn().mockReturnValue({ eq: mockSelectEq2 })
+    const mockSelect = jest.fn().mockReturnValue({ eq: mockSelectEq1 })
+    mockCreateClient.mockResolvedValue({
+      auth: { getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } }) },
+      from: jest.fn().mockReturnValue({ select: mockSelect, delete: mockDelete }),
+    })
+    await toggleLikeAction('note-1')
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
 })
 
 // ─── createCommentAction ─────────────────────────────────────────
