@@ -11,7 +11,11 @@ const fieldClass = (hasError: boolean) =>
 const labelWrapClass = 'flex items-center gap-0.5 mb-1.5'
 const labelClass = 'text-xs font-semibold text-gray-500'
 
-export default function SignupForm() {
+interface Props {
+  next?: string
+}
+
+export default function SignupForm({ next }: Props) {
   const [state, action, isPending] = useActionState<SignupState, FormData>(
     signupAction,
     null
@@ -59,6 +63,7 @@ export default function SignupForm() {
 
   return (
     <form action={action} onSubmit={handleSubmit} className="flex flex-col gap-3">
+      {next ? <input type="hidden" name="next" value={next} /> : null}
       {/* 아이디 */}
       <div>
         <div className={labelWrapClass}>

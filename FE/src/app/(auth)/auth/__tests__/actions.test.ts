@@ -52,6 +52,36 @@ describe('loginAction', () => {
     await loginAction(null, fd)
     expect(mockRedirect).toHaveBeenCalledWith('/')
   })
+
+  it('유효한 next가 있으면 로그인 후 해당 경로로 redirect한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      from: () => ({ select: () => ({ eq: () => ({ single: () => ({ data: { email: 'test@example.com' } }) }) }) }),
+      auth: { signInWithPassword: jest.fn().mockResolvedValue({ data: { user: { id: 'uuid' } }, error: null }) },
+    })
+
+    const fd = new FormData()
+    fd.set('username', 'testuser')
+    fd.set('password', 'correctpw')
+    fd.set('next', '/cupping/12')
+
+    await loginAction(null, fd)
+    expect(mockRedirect).toHaveBeenCalledWith('/cupping/12')
+  })
+
+  it('유효하지 않은 next면 로그인 후 루트로 fallback한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      from: () => ({ select: () => ({ eq: () => ({ single: () => ({ data: { email: 'test@example.com' } }) }) }) }),
+      auth: { signInWithPassword: jest.fn().mockResolvedValue({ data: { user: { id: 'uuid' } }, error: null }) },
+    })
+
+    const fd = new FormData()
+    fd.set('username', 'testuser')
+    fd.set('password', 'correctpw')
+    fd.set('next', 'https://evil.example')
+
+    await loginAction(null, fd)
+    expect(mockRedirect).toHaveBeenCalledWith('/')
+  })
 })
 
 describe('signupAction', () => {
@@ -99,6 +129,40 @@ describe('signupAction', () => {
     fd.set('display_name', '닉네임테스트')
     fd.set('email', 'new@example.com')
     fd.set('password', 'pw123456')
+
+    await signupAction(null, fd)
+    expect(mockRedirect).toHaveBeenCalledWith('/')
+  })
+
+  it('유효한 next가 있으면 회원가입 후 해당 경로로 redirect한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      from: () => ({ select: () => ({ eq: () => ({ single: () => ({ data: null }) }) }) }),
+      auth: { signUp: jest.fn().mockResolvedValue({ data: { user: { id: 'new-uuid' } }, error: null }) },
+    })
+
+    const fd = new FormData()
+    fd.set('username', 'newuser1')
+    fd.set('display_name', '닉네임테스트')
+    fd.set('email', 'new@example.com')
+    fd.set('password', 'pw123456')
+    fd.set('next', '/beans/5')
+
+    await signupAction(null, fd)
+    expect(mockRedirect).toHaveBeenCalledWith('/beans/5')
+  })
+
+  it('이중 슬래시 next면 회원가입 후 루트로 fallback한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      from: () => ({ select: () => ({ eq: () => ({ single: () => ({ data: null }) }) }) }),
+      auth: { signUp: jest.fn().mockResolvedValue({ data: { user: { id: 'new-uuid' } }, error: null }) },
+    })
+
+    const fd = new FormData()
+    fd.set('username', 'newuser1')
+    fd.set('display_name', '닉네임테스트')
+    fd.set('email', 'new@example.com')
+    fd.set('password', 'pw123456')
+    fd.set('next', '//evil.example')
 
     await signupAction(null, fd)
     expect(mockRedirect).toHaveBeenCalledWith('/')

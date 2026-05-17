@@ -8,7 +8,11 @@ const fieldClass = (hasError: boolean) =>
    focus:border-[#8B2635] focus:ring-2 focus:ring-[#8B2635]/15
    ${hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'}`
 
-export default function LoginForm() {
+interface Props {
+  next?: string
+}
+
+export default function LoginForm({ next }: Props) {
   const [state, action, isPending] = useActionState<LoginState, FormData>(
     loginAction,
     null
@@ -24,6 +28,7 @@ export default function LoginForm() {
 
   return (
     <form action={action} className="flex flex-col gap-4">
+      {next ? <input type="hidden" name="next" value={next} /> : null}
       <div>
         <label
           htmlFor="username"
