@@ -17,11 +17,11 @@ interface CuppingNoteDetail {
   memo: string | null
   created_at: string
   profiles: { username: string } | null
-  beans: { id: string; bean_name: string; cafe_name: string } | null
+  beans: { id: number; bean_name: string; cafe_name: string } | null
 }
 
 interface Comment {
-  id: string
+  id: number
   user_id: string
   content: string
   created_at: string
@@ -34,12 +34,14 @@ interface Props {
 
 export default async function CuppingDetailPage({ params }: Props) {
   const { id } = await params
+  const noteId = Number(id)
+  if (!noteId) notFound()
   const supabase = await createClient()
 
   const { data } = await supabase
     .from('cupping_notes')
     .select('id, user_id, bean_id, aroma, acidity, body, roast_date, memo, created_at, profiles(username), beans(id, bean_name, cafe_name)')
-    .eq('id', id)
+    .eq('id', noteId)
     .maybeSingle()
 
   if (!data) notFound()
@@ -61,7 +63,7 @@ export default async function CuppingDetailPage({ params }: Props) {
   const { data: likes } = await supabase
     .from('likes')
     .select('id, user_id')
-    .eq('note_id', id)
+    .eq('note_id', noteId)
 
   const likeCount = likes?.length ?? 0
   const initialLiked = likes?.some((l) => l.user_id === authData.user?.id) ?? false
@@ -69,7 +71,7 @@ export default async function CuppingDetailPage({ params }: Props) {
   const { data: commentsRaw } = await supabase
     .from('comments')
     .select('id, user_id, content, created_at, profiles(username, display_name)')
-    .eq('note_id', id)
+    .eq('note_id', noteId)
     .order('created_at', { ascending: true })
 
   const comments = (commentsRaw ?? []) as Comment[]

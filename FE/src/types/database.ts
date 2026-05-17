@@ -32,6 +32,7 @@ export type Database = {
           variety: string | null
           process: string | null
           roast_level: string | null
+          image_path: string | null
           altitude: number | null
           farm_name: string | null
           harvest_year: number | null
@@ -48,6 +49,7 @@ export type Database = {
           variety?: string | null
           process?: string | null
           roast_level?: string | null
+          image_path?: string | null
           altitude?: number | null
           farm_name?: string | null
           harvest_year?: number | null

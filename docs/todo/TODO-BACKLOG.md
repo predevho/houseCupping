@@ -5,8 +5,6 @@
 ### Member
 
 ### Bean
-- [ ] 원두 삭제 (admin 전용)
-- [ ] 원두 이미지 업로드
 
 ### Cupping
 

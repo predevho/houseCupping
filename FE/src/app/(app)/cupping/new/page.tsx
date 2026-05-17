@@ -11,12 +11,14 @@ export default async function CuppingNewPage({ searchParams }: Props) {
   const { beanId } = await searchParams
 
   if (!beanId) notFound()
+  const beanIdNumber = Number(beanId)
+  if (!beanIdNumber) notFound()
 
   const supabase = await createClient()
   const { data: bean } = await supabase
     .from('beans')
     .select('cafe_name, bean_name')
-    .eq('id', beanId)
+    .eq('id', beanIdNumber)
     .maybeSingle()
 
   if (!bean) notFound()

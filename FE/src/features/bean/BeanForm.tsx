@@ -12,6 +12,7 @@ interface BeanFormValues {
   origin: string | null
   process: string | null
   roast_level: string | null
+  image_path?: string | null
 }
 
 interface Props {
@@ -33,7 +34,7 @@ export default function BeanForm({
   )
 
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={formAction} encType="multipart/form-data" className="flex flex-col gap-3">
       {beanId && <input type="hidden" name="bean_id" value={beanId} />}
       <div>
         <label htmlFor="cafe_name" className="text-xs font-semibold text-gray-500">
@@ -118,6 +119,25 @@ export default function BeanForm({
             <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label htmlFor="image" className="text-xs font-semibold text-gray-500">
+          대표 이미지
+        </label>
+        <input
+          id="image"
+          name="image"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="w-full text-sm text-gray-600 file:mr-3 file:px-3 file:py-2 file:border-0 file:rounded-md file:bg-gray-100 file:text-gray-700"
+        />
+        <p className="text-[10px] text-gray-400 mt-1">JPG, PNG, WebP / 최대 5MB</p>
+        {state?.errors?.image && (
+          <p role="alert" className="text-[10px] text-red-600 mt-1">
+            {state.errors.image}
+          </p>
+        )}
       </div>
 
       {state?.errors?.general && (

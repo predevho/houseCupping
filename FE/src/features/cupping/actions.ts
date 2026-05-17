@@ -86,6 +86,9 @@ export async function createCuppingAction(
 }
 
 export async function deleteCuppingAction(noteId: string, beanId: string): Promise<void> {
+  const noteIdNumber = Number(noteId)
+  if (!noteIdNumber) return
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -96,7 +99,7 @@ export async function deleteCuppingAction(noteId: string, beanId: string): Promi
   const { error } = await supabase
     .from('cupping_notes')
     .delete()
-    .eq('id', noteId)
+    .eq('id', noteIdNumber)
     .eq('user_id', user.id)
 
   if (error) throw new Error(error.message)
@@ -108,7 +111,8 @@ export async function updateCuppingAction(
   _state: CuppingFormState,
   formData: FormData
 ): Promise<CuppingFormState> {
-  const note_id = formData.get('note_id') as string
+  const noteIdValue = formData.get('note_id') as string
+  const note_id = Number(noteIdValue)
   if (!note_id) return { errors: { general: '노트 정보가 없습니다' } }
 
   const bean_id = Number(formData.get('bean_id') as string)

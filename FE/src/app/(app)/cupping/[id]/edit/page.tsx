@@ -21,13 +21,15 @@ interface Props {
 
 export default async function CuppingEditPage({ params }: Props) {
   const { id } = await params
+  const noteId = Number(id)
+  if (!noteId) notFound()
   const supabase = await createClient()
 
   const [{ data }, { data: authData }] = await Promise.all([
     supabase
       .from('cupping_notes')
       .select('id, user_id, bean_id, aroma, acidity, body, roast_date, memo, beans(bean_name, cafe_name)')
-      .eq('id', id)
+      .eq('id', noteId)
       .maybeSingle(),
     supabase.auth.getUser(),
   ])

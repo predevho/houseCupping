@@ -30,6 +30,11 @@ describe('BeanForm', () => {
     expect(screen.getByLabelText(/로스팅/)).toBeInTheDocument()
   })
 
+  it('이미지 파일 입력 필드가 렌더링된다', () => {
+    render(<BeanForm action={mockAction} submitLabel="원두 등록" />)
+    expect(screen.getByLabelText(/대표 이미지/)).toBeInTheDocument()
+  })
+
   it('cafe_name 에러 메시지를 표시한다', () => {
     jest.requireMock('react').useActionState = () => [
       { errors: { cafe_name: '카페명을 입력해주세요' } },

@@ -9,6 +9,7 @@ interface Props {
 
 export default async function BeanEditPage({ params }: Props) {
   const { id } = await params
+  const beanId = Number(id)
   const supabase = await createClient()
   const {
     data: { user },
@@ -19,7 +20,7 @@ export default async function BeanEditPage({ params }: Props) {
   const { data: bean } = await supabase
     .from('beans')
     .select('id, user_id, cafe_name, bean_name, origin, process, roast_level')
-    .eq('id', id)
+    .eq('id', beanId)
     .maybeSingle()
 
   if (!bean || bean.user_id !== user.id) {

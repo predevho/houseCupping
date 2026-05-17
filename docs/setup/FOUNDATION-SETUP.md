@@ -34,7 +34,7 @@ agent-coding/
 
 ---
 
-## BE — Supabase 마이그레이션 (15개)
+## BE — Supabase 마이그레이션 (16개)
 
 - 마이그레이션과 `config.toml`, `seed.sql`의 기준 위치는 `BE/supabase/`이다.
 - 루트 `/supabase` 폴더는 Supabase CLI가 생성한 로컬 메타데이터일 수 있으며, 프로젝트 기준 경로로 사용하지 않는다.
@@ -56,6 +56,7 @@ agent-coding/
 | 013 | profiles.email 컬럼 추가, username 4~16자, display_name NOT NULL 4~12자, 트리거 수정 |
 | 014 | bean_ratings score 범위 0.5~5.0 제약 |
 | 015 | cupping_notes aroma/acidity/body NUMERIC 0.5~5.0 제약 |
+| 016 | beans.image_path 컬럼 + public `beans` Storage bucket + 업로드/삭제 정책 |
 
 ---
 
@@ -93,7 +94,7 @@ agent-coding/
 | `src/features/member/EditForm.tsx` | 프로필 수정 폼 Client Component |
 | `src/features/member/actions.ts` | 프로필 수정 Server Action |
 | `src/features/bean/BeanForm.tsx` | 원두 등록 폼 Client Component |
-| `src/features/bean/actions.ts` | 원두 등록 Server Action |
+| `src/features/bean/actions.ts` | 원두 등록/수정/삭제 Server Action |
 
 ---
 
@@ -150,6 +151,7 @@ agent-coding/
 | 원두 등록 (`/beans/new`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 수정 (`/beans/[id]/edit`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 삭제 (admin 전용) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 이미지 업로드 (등록/수정, 목록/상세 표시) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 목록 (`/beans`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 상세 조회 + 평균 평점 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 커핑 노트 목록 (`/cupping`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
@@ -164,5 +166,4 @@ agent-coding/
 
 ## 다음 작업
 
-- [ ] 커핑 노트 목록 페이지 (필터링, 정렬)
-- [ ] 원두 상세 평균 평점 집계 표시
+- [ ] TODO 문서 기준 다음 우선순위 작업으로 갱신 필요
