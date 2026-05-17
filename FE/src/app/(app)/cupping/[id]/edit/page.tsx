@@ -4,9 +4,9 @@ import CuppingForm from '@/features/cupping/CuppingForm'
 import { updateCuppingAction } from '@/features/cupping/actions'
 
 interface CuppingNoteForEdit {
-  id: string
+  id: number
   user_id: string
-  bean_id: string
+  bean_id: number
   aroma: number
   acidity: number
   body: number
@@ -55,8 +55,8 @@ export default async function CuppingEditPage({ params }: Props) {
     <main className="max-w-md mx-auto px-4 py-8">
       <h1 className="text-lg font-bold mb-6">커핑 노트 수정</h1>
       <CuppingForm
-        noteId={note.id}
-        beanId={note.bean_id}
+        noteId={String(note.id)}
+        beanId={String(note.bean_id)}
         beanLabel={beanLabel}
         initialValues={{
           aroma: note.aroma,

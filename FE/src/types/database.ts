@@ -24,7 +24,7 @@ export type Database = {
       }
       beans: {
         Row: {
-          id: string
+          id: number
           user_id: string | null
           cafe_name: string
           bean_name: string
@@ -40,7 +40,7 @@ export type Database = {
           created_at: string
         }
         Insert: {
-          id?: string
+          id?: never
           user_id: string | null
           cafe_name: string
           bean_name: string
@@ -60,9 +60,9 @@ export type Database = {
       }
       cupping_notes: {
         Row: {
-          id: string
+          id: number
           user_id: string
-          bean_id: string
+          bean_id: number
           roast_date: string | null
           aroma: number
           acidity: number
@@ -71,9 +71,9 @@ export type Database = {
           created_at: string
         }
         Insert: {
-          id?: string
+          id?: never
           user_id: string
-          bean_id: string
+          bean_id: number
           roast_date?: string | null
           aroma: number
           acidity: number
@@ -86,16 +86,16 @@ export type Database = {
       }
       bean_ratings: {
         Row: {
-          id: string
+          id: number
           user_id: string
-          bean_id: string
+          bean_id: number
           score: number
           created_at: string
         }
         Insert: {
-          id?: string
+          id?: never
           user_id: string
-          bean_id: string
+          bean_id: number
           score: number
           created_at?: string
         }
@@ -104,15 +104,15 @@ export type Database = {
       }
       likes: {
         Row: {
-          id: string
+          id: number
           user_id: string
-          note_id: string
+          note_id: number
           created_at: string
         }
         Insert: {
-          id?: string
+          id?: never
           user_id: string
-          note_id: string
+          note_id: number
           created_at?: string
         }
         Update: never
@@ -120,16 +120,16 @@ export type Database = {
       }
       comments: {
         Row: {
-          id: string
+          id: number
           user_id: string
-          note_id: string
+          note_id: number
           content: string
           created_at: string
         }
         Insert: {
-          id?: string
+          id?: never
           user_id: string
-          note_id: string
+          note_id: number
           content: string
           created_at?: string
         }

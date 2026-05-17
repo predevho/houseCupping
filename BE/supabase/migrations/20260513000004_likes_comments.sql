@@ -1,7 +1,7 @@
 CREATE TABLE public.likes (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  note_id UUID REFERENCES public.cupping_notes(id) ON DELETE CASCADE NOT NULL,
+  note_id BIGINT REFERENCES public.cupping_notes(id) ON DELETE CASCADE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   UNIQUE (user_id, note_id)
 );
@@ -19,9 +19,9 @@ CREATE POLICY "likes_delete_own"
 
 -- comments
 CREATE TABLE public.comments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  note_id UUID REFERENCES public.cupping_notes(id) ON DELETE CASCADE NOT NULL,
+  note_id BIGINT REFERENCES public.cupping_notes(id) ON DELETE CASCADE NOT NULL,
   content TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );

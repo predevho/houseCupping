@@ -7,9 +7,9 @@ import CommentForm from '@/features/social/CommentForm'
 import DeleteCommentButton from '@/features/social/DeleteCommentButton'
 
 interface CuppingNoteDetail {
-  id: string
+  id: number
   user_id: string
-  bean_id: string
+  bean_id: number
   aroma: number
   acidity: number
   body: number
@@ -137,14 +137,14 @@ export default async function CuppingDetailPage({ params }: Props) {
           >
             수정
           </Link>
-          <DeleteButton noteId={note.id} beanId={note.bean_id} />
+          <DeleteButton noteId={String(note.id)} beanId={String(note.bean_id)} />
         </div>
       )}
 
       {/* 좋아요 */}
       <div className="mt-6 border-t border-gray-100 pt-4">
         <LikeButton
-          noteId={note.id}
+          noteId={String(note.id)}
           userId={authData.user?.id ?? null}
           initialLiked={initialLiked}
           initialCount={likeCount}
@@ -162,7 +162,7 @@ export default async function CuppingDetailPage({ params }: Props) {
                   {comment.profiles?.display_name ?? comment.profiles?.username ?? '알 수 없음'}
                 </span>
                 {comment.user_id === authData.user?.id && (
-                  <DeleteCommentButton commentId={comment.id} noteId={note.id} />
+                  <DeleteCommentButton commentId={String(comment.id)} noteId={String(note.id)} />
                 )}
               </div>
               <p className="text-sm text-gray-800">{comment.content}</p>
@@ -172,7 +172,7 @@ export default async function CuppingDetailPage({ params }: Props) {
             </li>
           ))}
         </ul>
-        <CommentForm noteId={note.id} userId={authData.user?.id ?? null} />
+        <CommentForm noteId={String(note.id)} userId={authData.user?.id ?? null} />
       </section>
     </main>
   )

@@ -21,7 +21,7 @@ export async function createCuppingAction(
   _state: CuppingFormState,
   formData: FormData
 ): Promise<CuppingFormState> {
-  const bean_id = formData.get('bean_id') as string
+  const bean_id = Number(formData.get('bean_id') as string)
   if (!bean_id) {
     return { errors: { general: '원두 정보가 없습니다' } }
   }
@@ -111,7 +111,7 @@ export async function updateCuppingAction(
   const note_id = formData.get('note_id') as string
   if (!note_id) return { errors: { general: '노트 정보가 없습니다' } }
 
-  const bean_id = formData.get('bean_id') as string
+  const bean_id = Number(formData.get('bean_id') as string)
   const aromaRaw = formData.get('aroma') as string
   const acidityRaw = formData.get('acidity') as string
   const bodyRaw = formData.get('body') as string

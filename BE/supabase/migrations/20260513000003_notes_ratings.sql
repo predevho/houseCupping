@@ -1,7 +1,7 @@
 CREATE TABLE public.cupping_notes (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  bean_id UUID REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
+  bean_id BIGINT REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
   aroma INTEGER NOT NULL CHECK (aroma BETWEEN 1 AND 10),
   acidity INTEGER NOT NULL CHECK (acidity BETWEEN 1 AND 10),
   body INTEGER NOT NULL CHECK (body BETWEEN 1 AND 10),
@@ -29,9 +29,9 @@ CREATE INDEX idx_notes_created_at ON public.cupping_notes (created_at DESC);
 
 -- bean_ratings
 CREATE TABLE public.bean_ratings (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  bean_id UUID REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
+  bean_id BIGINT REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
   score NUMERIC(3,1) NOT NULL CHECK (score >= 0.5 AND score <= 10.0 AND score % 0.5 = 0),
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   UNIQUE (user_id, bean_id)
