@@ -6,9 +6,9 @@
 
 ```sql
 cupping_notes (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  bean_id UUID REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
+  bean_id BIGINT REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
   roast_date DATE,
   aroma NUMERIC(3,1) NOT NULL CHECK (aroma >= 0.5 AND aroma <= 5.0 AND aroma % 0.5 = 0),
   acidity NUMERIC(3,1) NOT NULL CHECK (acidity >= 0.5 AND acidity <= 5.0 AND acidity % 0.5 = 0),
@@ -18,9 +18,9 @@ cupping_notes (
 )
 
 bean_ratings (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  bean_id UUID REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
+  bean_id BIGINT REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
   score NUMERIC(3,1) NOT NULL CHECK (score >= 0.5 AND score <= 5.0 AND score % 0.5 = 0),
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   UNIQUE (user_id, bean_id)
