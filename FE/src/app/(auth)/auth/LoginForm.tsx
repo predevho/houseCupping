@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useRef } from 'react'
+import FormSubmitButton from '@/components/ui/FormSubmitButton'
 import { loginAction, type LoginState } from './actions'
 
 const fieldClass = (hasError: boolean) =>
@@ -69,14 +70,9 @@ export default function LoginForm({ next }: Props) {
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="h-10 bg-[#8B2635] text-white text-sm font-semibold rounded-md mt-1
-          hover:bg-[#7A2030] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {isPending ? '로그인 중...' : '로그인'}
-      </button>
+      <FormSubmitButton isPending={isPending} pendingLabel="로그인 중...">
+        로그인
+      </FormSubmitButton>
     </form>
   )
 }

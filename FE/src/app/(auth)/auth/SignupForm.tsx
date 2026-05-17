@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useRef, useState } from 'react'
+import FormSubmitButton from '@/components/ui/FormSubmitButton'
 import { signupAction, type SignupState } from './actions'
 
 const fieldClass = (hasError: boolean) =>
@@ -34,8 +35,6 @@ export default function SignupForm({ next }: Props) {
     else if (state.errors.email) emailRef.current?.focus()
   }, [state])
 
-  // fireEvent.click in JSDOM + React 19 form actions does not trigger onSubmit,
-  // so this click handler provides the client-side mismatch check for test compat.
   function handleButtonClick() {
     const pw = passwordRef.current?.value ?? ''
     const confirm = passwordConfirmRef.current?.value ?? ''
@@ -65,7 +64,6 @@ export default function SignupForm({ next }: Props) {
   return (
     <form action={action} onSubmit={handleSubmit} className="flex flex-col gap-3">
       {next ? <input type="hidden" name="next" value={next} /> : null}
-      {/* 아이디 */}
       <div>
         <div className={labelWrapClass}>
           <label htmlFor="username" className={labelClass}>아이디</label>
@@ -87,7 +85,6 @@ export default function SignupForm({ next }: Props) {
         )}
       </div>
 
-      {/* 닉네임 */}
       <div>
         <div className={labelWrapClass}>
           <label htmlFor="display_name" className={labelClass}>닉네임</label>
@@ -103,7 +100,6 @@ export default function SignupForm({ next }: Props) {
         <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">4~12자</p>
       </div>
 
-      {/* 이메일 */}
       <div>
         <div className={labelWrapClass}>
           <label htmlFor="email" className={labelClass}>이메일</label>
@@ -124,7 +120,6 @@ export default function SignupForm({ next }: Props) {
         )}
       </div>
 
-      {/* 비밀번호 */}
       <div>
         <div className={labelWrapClass}>
           <label htmlFor="password" className={labelClass}>비밀번호</label>
@@ -140,7 +135,6 @@ export default function SignupForm({ next }: Props) {
         />
       </div>
 
-      {/* 비밀번호 확인 */}
       <div>
         <div className={labelWrapClass}>
           <label htmlFor="passwordConfirm" className={labelClass}>비밀번호 확인</label>
@@ -167,15 +161,9 @@ export default function SignupForm({ next }: Props) {
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        onClick={handleButtonClick}
-        className="h-10 bg-[#8B2635] text-white text-sm font-semibold rounded-md mt-1
-          hover:bg-[#7A2030] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {isPending ? '가입 중...' : '가입하기'}
-      </button>
+      <FormSubmitButton isPending={isPending} pendingLabel="가입 중..." onClick={handleButtonClick}>
+        가입하기
+      </FormSubmitButton>
     </form>
   )
 }
