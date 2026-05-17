@@ -33,7 +33,7 @@ agent-coding/
 
 ---
 
-## BE — Supabase 마이그레이션 (13개)
+## BE — Supabase 마이그레이션 (15개)
 
 | 파일 | 내용 |
 |---|---|
@@ -50,6 +50,8 @@ agent-coding/
 | 011 | beans.user_id → ON DELETE SET NULL (탈퇴 시 원두 보존) |
 | 012 | username 자동 생성 시 허용 외 문자 `_`로 치환 |
 | 013 | profiles.email 컬럼 추가, username 4~16자, display_name NOT NULL 4~12자, 트리거 수정 |
+| 014 | bean_ratings score 범위 0.5~5.0 제약 |
+| 015 | cupping_notes aroma/acidity/body NUMERIC 0.5~5.0 제약 |
 
 ---
 
@@ -135,11 +137,18 @@ agent-coding/
 | 내 프로필 조회·수정 (`/profile`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 타인 프로필 조회 (`/profile/[username]`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 원두 등록 (`/beans/new`) | `docs/features/BEAN-IMPLEMENTATION.md` |
-| 원두 상세 조회 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 상세 조회 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 커핑 노트 등록 (`/cupping/new`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 상세 조회 (`/cupping/[id]`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 수정 (`/cupping/[id]/edit`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 삭제 | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 좋아요 토글 (`/cupping/[id]`) | `docs/features/SOCIAL-IMPLEMENTATION.md` |
+| 댓글 작성/삭제 (`/cupping/[id]`) | `docs/features/SOCIAL-IMPLEMENTATION.md` |
 
 ---
 
 ## 다음 작업
 
-- [ ] 원두 등록 폼 UI
-- [ ] 커핑 노트 작성 폼 UI
+- [ ] 커핑 노트 목록 페이지 (필터링, 정렬)
+- [ ] 원두 상세 평균 평점 집계 표시
+- [ ] 원두 목록 페이지 (검색, 필터링)

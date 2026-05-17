@@ -44,3 +44,6 @@
 - [x] 커핑 노트 등록 페이지 (`/cupping/new`) — `docs/features/CUPPING-IMPLEMENTATION.md`
 - [x] 원두 상세 커핑 노트 목록 (`/beans/[id]` 업데이트) — `docs/features/BEAN-IMPLEMENTATION.md`
 - [x] 커핑 노트 상세 페이지 (`/cupping/[id]`) — 2026-05-16
+- [x] 커핑 노트 수정 / 삭제 — 2026-05-16
+- [x] Social 기능 — 좋아요 (`likes`) — `/cupping/[id]` LikeButton, toggleLikeAction
+- [x] Social 기능 — 댓글 작성/삭제 (`comments`) — `/cupping/[id]` CommentForm, DeleteCommentButton, Server Actions
