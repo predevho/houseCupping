@@ -1,20 +1,17 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import BeanSearch from '@/features/bean/BeanSearch'
+import type { Database } from '@/types/database'
 
-interface Bean {
-  id: number
-  bean_name: string
-  cafe_name: string
-  origin: string | null
-}
+type Bean = Pick<Database['public']['Tables']['beans']['Row'], 'id' | 'bean_name' | 'cafe_name' | 'origin'>
 
 interface Props {
   searchParams: Promise<{ q?: string }>
 }
 
 export default async function BeansPage({ searchParams }: Props) {
-  const { q } = await searchParams
+  const { q: rawQ } = await searchParams
+  const q = rawQ?.slice(0, 100)
   const supabase = await createClient()
 
   let query = supabase
@@ -23,12 +20,16 @@ export default async function BeansPage({ searchParams }: Props) {
     .order('created_at', { ascending: false })
 
   if (q) {
-    query = query.or(`bean_name.ilike.%${q}%,cafe_name.ilike.%${q}%`)
+    const safe = q.replace(/[,()]/g, '')
+    query = query.or(`bean_name.ilike.%${safe}%,cafe_name.ilike.%${safe}%`)
   }
 
   const { data, error } = await query
-  if (error) console.error('beans query error:', error)
-  const beans = (data ?? []) as Bean[]
+  if (error) {
+    console.error('beans query error:', error)
+    throw new Error('원두 목록을 불러오는 데 실패했어요')
+  }
+  const beans = data as Bean[]
 
   return (
     <main className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
