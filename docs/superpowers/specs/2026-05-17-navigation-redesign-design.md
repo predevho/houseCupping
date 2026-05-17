@@ -8,7 +8,8 @@
 ## Goal
 
 현재 단순한 텍스트 헤더를 `모던 제품 느낌`의 내비게이션 구조로 리디자인한다.
-데스크톱에서는 `상단 nav + 좌측 카테고리 nav + 메인 콘텐츠` 3단 구조를 사용하고, 모바일에서는 좌측 nav를 제거한 뒤 상단 아래 가로 탭으로 축약한다.
+현재 웹앱은 데스크톱 중심 정보구조를 우선 정리하고, 모바일은 별도 앱 프로젝트로 확장하기 전까지 `깨지지 않는 최소 반응형`만 제공한다.
+따라서 이번 범위에서는 `상단 nav + 좌측 카테고리 nav + 메인 콘텐츠` 3단 구조를 데스크톱 중심으로 구현하고, 모바일 전용 nav 컴포넌트는 만들지 않는다.
 
 ## Design Direction
 
@@ -53,17 +54,15 @@
 ┌─────────────────────────────────────────────┐
 │ House Cupping                  로그인/프로필 │
 ├─────────────────────────────────────────────┤
-│ 홈 | 원두 | 커핑 노트 | 프로필              │  ← 가로 스크롤 탭
-├─────────────────────────────────────────────┤
 │                                             │
 │             메인 콘텐츠 영역                 │
 │                                             │
 └─────────────────────────────────────────────┘
 ```
 
-- 좌측 nav 제거
-- 상단 브랜드 바 아래에 가로 스크롤 카테고리 탭 추가
-- 현재 위치는 pill/underline 스타일로 강조
+- 좌측 nav 숨김
+- 상단 nav만 유지
+- 메인 콘텐츠가 좁은 화면에서도 깨지지 않도록 spacing과 width만 최소 조정
 
 ## Navigation Model
 
@@ -92,7 +91,7 @@
 - 현재 경로와 일치하는 항목은 강조
 - 강조 방식:
   - 데스크톱: 옅은 배경 + 좌측 포인트 bar + 진한 텍스트
-  - 모바일: pill 배경 또는 하단 border
+  - 모바일: 이번 범위에서는 좌측 nav를 숨기므로 상단 nav의 계정 액션만 유지
 
 ## Component Structure
 
@@ -100,7 +99,6 @@
 AppLayout
   ├── TopNav (Header.tsx 확장 또는 분리)
   ├── SideNav (신규)
-  ├── MobileCategoryNav (신규 또는 SideNav의 모바일 분기)
   └── Main content
 ```
 
@@ -108,10 +106,9 @@ AppLayout
 
 - `Header.tsx`: 상단 브랜드/계정 액션만 담당
 - `SideNav.tsx`: 데스크톱 카테고리 nav
-- `MobileCategoryNav.tsx`: 모바일 가로 탭
-- `(app)/layout.tsx`: 반응형 레이아웃 배치 담당
+- `(app)/layout.tsx`: 데스크톱 우선 레이아웃 배치 담당
 
-이렇게 나누면 계정 상태 분기와 카테고리 분기를 섞지 않아도 된다.
+이렇게 나누면 계정 상태 분기와 카테고리 분기를 섞지 않아도 되고, 나중에 모바일 앱 프로젝트에서 별도 네비게이션 구조를 설계하기도 쉽다.
 
 ## Layout Specification
 
@@ -126,8 +123,9 @@ AppLayout
 ### 모바일
 
 - 상단 nav 높이: `56px`
-- 카테고리 탭: `overflow-x-auto`
-- 탭 간격: 좁지 않게 `px-3~4`, `py-2`
+- 좌측 nav: 숨김
+- 메인 콘텐츠: 가로 스크롤이 생기지 않도록 `px-4` 수준의 최소 패딩 유지
+- 상단 nav만으로 기본 이동 진입을 제공
 
 ## Sample Mockup
 
@@ -155,8 +153,6 @@ AppLayout
 ┌──────────────────────────────────────────────┐
 │ HOUSE CUPPING                     로그인      │
 ├──────────────────────────────────────────────┤
-│ 홈   원두   커핑 노트   프로필               │
-├──────────────────────────────────────────────┤
 │ 최신 커핑 피드                                 │
 │ ┌──────────────────────────────────────────┐ │
 │ │ 예가체프 - 블루보틀                     │ │
@@ -165,6 +161,8 @@ AppLayout
 │ └──────────────────────────────────────────┘ │
 └──────────────────────────────────────────────┘
 ```
+
+모바일은 별도 앱 네비게이션을 흉내 내지 않고, 웹 레이아웃이 무너지지 않는 선에서만 대응한다.
 
 ## Behavior
 
@@ -177,26 +175,24 @@ AppLayout
 ### 로그인 사용자
 
 - 상단 우측에 프로필 링크와 로그아웃 버튼
-- 좌측/모바일 카테고리 nav는 동일
+- 데스크톱에서는 좌측 카테고리 nav 사용
+- 모바일에서는 상단 nav만 유지
 
 ## Testing Scope
 
 - `Header`가 비회원/로그인 상태에 따라 올바른 상단 액션을 보여주는지
 - `SideNav`가 현재 경로 기준 active state를 렌더링하는지
-- `MobileCategoryNav`가 주요 4개 링크를 렌더링하는지
-- `(app)/layout.tsx`가 데스크톱/모바일용 nav 구조를 함께 포함하는지
+- `(app)/layout.tsx`가 데스크톱에서는 Header + SideNav 구조를 포함하고, 작은 화면에서는 SideNav를 숨기는지
 
 ## File Plan
 
 | 파일 | 변경 | 역할 |
 |---|---|---|
-| `FE/src/app/(app)/layout.tsx` | 수정 | 상단 nav + 좌측 nav + 모바일 탭 배치 |
+| `FE/src/app/(app)/layout.tsx` | 수정 | 상단 nav + 좌측 nav 배치, 모바일 최소 반응형 처리 |
 | `FE/src/components/layout/Header.tsx` | 수정 | 모던 상단 nav 스타일 반영 |
 | `FE/src/components/layout/SideNav.tsx` | 신규 | 데스크톱 카테고리 nav |
-| `FE/src/components/layout/MobileCategoryNav.tsx` | 신규 | 모바일 가로 탭 nav |
 | `FE/src/components/layout/__tests__/Header.test.tsx` | 수정 | 기존 상단 액션 분기 유지 검증 |
 | `FE/src/components/layout/__tests__/SideNav.test.tsx` | 신규 | active state 테스트 |
-| `FE/src/components/layout/__tests__/MobileCategoryNav.test.tsx` | 신규 | 링크 렌더링 테스트 |
 | `FE/src/app/globals.css` | 수정 | 필요한 전역 토큰/보조 색상 정리 |
 | `docs/features/LAYOUT-IMPLEMENTATION.md` | 수정 | 새 nav 구조 반영 |
 
@@ -204,6 +200,7 @@ AppLayout
 
 - 검색창
 - 알림/북마크/설정 메뉴
+- 모바일 전용 웹 네비게이션 컴포넌트
 - 접히는 데스크톱 사이드바
 - 다크 모드
 - 관리자 전용 nav 분기
