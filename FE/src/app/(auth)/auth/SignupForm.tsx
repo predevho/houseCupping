@@ -35,6 +35,8 @@ export default function SignupForm({ next }: Props) {
     else if (state.errors.email) emailRef.current?.focus()
   }, [state])
 
+  // fireEvent.click in JSDOM + React 19 form actions does not trigger onSubmit,
+  // so this click handler provides the client-side mismatch check for test compat.
   function handleButtonClick() {
     const pw = passwordRef.current?.value ?? ''
     const confirm = passwordConfirmRef.current?.value ?? ''
