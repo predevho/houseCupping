@@ -21,7 +21,7 @@ export default async function CuppingListPage({ searchParams }: Props) {
   let notesQuery = supabase
     .from('cupping_notes')
     .select(
-      'id, bean_id, aroma, acidity, body, roast_date, memo, created_at, profiles(username, display_name), beans(id, bean_name, cafe_name)'
+      'id, bean_id, aroma, acidity, body, roast_date, memo, created_at, profiles(username, display_name), beans(id, bean_name, cafe_name), likes(count), comments(count)'
     )
     .order('created_at', { ascending: sort === 'oldest' })
 
