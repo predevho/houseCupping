@@ -21,6 +21,18 @@ function mockUser(username: string) {
 }
 
 describe('Header', () => {
+  it('상단 nav용 banner를 렌더링한다', async () => {
+    mockUser('tester')
+    render(await Header())
+    expect(screen.getByRole('banner')).toBeInTheDocument()
+  })
+
+  it('주요 메뉴 내비게이션을 렌더링한다', async () => {
+    mockUser('tester')
+    render(await Header())
+    expect(screen.getByRole('navigation', { name: '주요 메뉴' })).toBeInTheDocument()
+  })
+
   it('비회원이면 로그인과 회원가입 링크를 렌더링한다', async () => {
     mockCreateClient.mockResolvedValue({
       auth: {
