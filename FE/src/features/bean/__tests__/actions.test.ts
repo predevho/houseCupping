@@ -1,4 +1,4 @@
-import { createBeanAction, updateBeanAction } from '../actions'
+import { createBeanAction, deleteBeanAction, updateBeanAction } from '../actions'
 
 jest.mock('@/lib/supabase/server', () => ({ createClient: jest.fn() }))
 jest.mock('next/navigation', () => ({ redirect: jest.fn() }))
@@ -92,5 +92,55 @@ describe('updateBeanAction', () => {
     await updateBeanAction(null, fd)
 
     expect(mockRedirect).toHaveBeenCalledWith('/beans/12')
+  })
+})
+
+describe('deleteBeanAction', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('비로그인 상태면 아무 작업도 하지 않는다', async () => {
+    const mockDeleteEq = jest.fn()
+
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+      from: jest.fn().mockReturnValue({
+        delete: jest.fn().mockReturnValue({
+          eq: mockDeleteEq,
+        }),
+      }),
+    })
+
+    await deleteBeanAction('12')
+
+    expect(mockDeleteEq).not.toHaveBeenCalled()
+    expect(mockRedirect).not.toHaveBeenCalled()
+  })
+
+  it('성공 시 원두를 삭제하고 목록 페이지로 redirect한다', async () => {
+    const mockEqRole = jest.fn().mockResolvedValue({ error: null })
+    const mockEqId = jest.fn().mockReturnValue({ eq: mockEqRole })
+
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: {
+            user: { id: 'admin-id', app_metadata: { role: 'admin' } },
+          },
+        }),
+      },
+      from: jest.fn().mockReturnValue({
+        delete: jest.fn().mockReturnValue({
+          eq: mockEqId,
+        }),
+      }),
+    })
+
+    await deleteBeanAction('12')
+
+    expect(mockRedirect).toHaveBeenCalledWith('/beans')
   })
 })

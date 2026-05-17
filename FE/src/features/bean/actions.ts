@@ -97,3 +97,21 @@ export async function updateBeanAction(
 
   redirect(`/beans/${bean_id}`)
 }
+
+export async function deleteBeanAction(beanId: string): Promise<void> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return
+
+  const { error } = await supabase
+    .from('beans')
+    .delete()
+    .eq('id', Number(beanId))
+
+  if (error) throw new Error(error.message)
+
+  redirect('/beans')
+}
