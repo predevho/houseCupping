@@ -19,9 +19,12 @@ jest.mock('react', () => ({
 beforeEach(() => jest.clearAllMocks())
 
 describe('CommentForm', () => {
-  it('userId가 null이면 로그인 안내를 렌더링한다', () => {
+  it('userId가 null이면 로그인 CTA 링크를 렌더링한다', () => {
     render(<CommentForm noteId="note-1" userId={null} />)
-    expect(screen.getByText('로그인 후 댓글을 작성할 수 있습니다.')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '로그인하고 댓글 쓰기' })).toHaveAttribute(
+      'href',
+      '/auth?next=/cupping/note-1'
+    )
   })
 
   it('userId가 있으면 textarea와 등록 버튼을 렌더링한다', () => {

@@ -21,6 +21,31 @@ function mockUser(username: string) {
 }
 
 describe('Header', () => {
+  it('비회원이면 로그인과 회원가입 링크를 렌더링한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    })
+    render(await Header())
+    expect(screen.getByRole('link', { name: '로그인' })).toHaveAttribute('href', '/auth')
+    expect(screen.getByRole('link', { name: '회원가입' })).toHaveAttribute('href', '/auth')
+  })
+
+  it('비회원이면 LogoutButton을 렌더링하지 않는다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    })
+    render(await Header())
+    expect(screen.queryByTestId('logout-button')).not.toBeInTheDocument()
+  })
+
   it('로고 텍스트를 렌더링한다', async () => {
     mockUser('tester')
     render(await Header())
