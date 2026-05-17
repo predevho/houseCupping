@@ -1,4 +1,4 @@
-import { createBeanAction } from '../actions'
+import { createBeanAction, updateBeanAction } from '../actions'
 
 jest.mock('@/lib/supabase/server', () => ({ createClient: jest.fn() }))
 jest.mock('next/navigation', () => ({ redirect: jest.fn() }))
@@ -52,5 +52,45 @@ describe('createBeanAction', () => {
     const fd = makeFormData({ cafe_name: '블루보틀', bean_name: '에티오피아 예가체프' })
     await createBeanAction(null, fd)
     expect(mockRedirect).toHaveBeenCalledWith('/beans/new-bean-id')
+  })
+})
+
+describe('updateBeanAction', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('bean_id가 없으면 에러를 반환한다', async () => {
+    const fd = makeFormData({ cafe_name: '블루보틀', bean_name: '예가체프' })
+    const result = await updateBeanAction(null, fd)
+
+    expect(result).toEqual({ errors: { general: '원두 정보가 없습니다' } })
+  })
+
+  it('성공 시 상세 페이지로 redirect를 호출한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: { id: 'user-id' } },
+        }),
+      },
+      from: jest.fn().mockReturnValue({
+        update: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            eq: jest.fn().mockResolvedValue({
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    })
+
+    const fd = makeFormData({
+      bean_id: '12',
+      cafe_name: '블루보틀',
+      bean_name: '에티오피아 예가체프',
+    })
+
+    await updateBeanAction(null, fd)
+
+    expect(mockRedirect).toHaveBeenCalledWith('/beans/12')
   })
 })
