@@ -20,11 +20,13 @@ beforeEach(() => jest.clearAllMocks())
 // ─── toggleLikeAction ───────────────────────────────────────────
 describe('toggleLikeAction', () => {
   it('비로그인 시 아무 것도 하지 않는다', async () => {
+    const mockFrom = jest.fn()
     mockCreateClient.mockResolvedValue({
       auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
-      from: jest.fn(),
+      from: mockFrom,
     })
     await toggleLikeAction('note-1')
+    expect(mockFrom).not.toHaveBeenCalled()
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 
@@ -44,8 +46,9 @@ describe('toggleLikeAction', () => {
   })
 
   it('좋아요가 있으면 delete한다', async () => {
-    const mockMatch = jest.fn().mockResolvedValue({ error: null })
-    const mockDelete = jest.fn().mockReturnValue({ match: mockMatch })
+    const mockDeleteEq2 = jest.fn().mockResolvedValue({ error: null })
+    const mockDeleteEq1 = jest.fn().mockReturnValue({ eq: mockDeleteEq2 })
+    const mockDelete = jest.fn().mockReturnValue({ eq: mockDeleteEq1 })
     const mockMaybeSingle = jest.fn().mockResolvedValue({ data: { id: 'like-1' } })
     const mockEq2 = jest.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
@@ -55,8 +58,23 @@ describe('toggleLikeAction', () => {
       from: jest.fn().mockReturnValue({ select: mockSelect, delete: mockDelete }),
     })
     await toggleLikeAction('note-1')
-    expect(mockMatch).toHaveBeenCalledWith({ note_id: 'note-1', user_id: 'user-1' })
+    expect(mockDeleteEq1).toHaveBeenCalledWith('note_id', 'note-1')
+    expect(mockDeleteEq2).toHaveBeenCalledWith('user_id', 'user-1')
     expect(mockRevalidatePath).toHaveBeenCalledWith('/cupping/note-1')
+  })
+
+  it('insert 실패 시 revalidatePath를 호출하지 않는다', async () => {
+    const mockInsert = jest.fn().mockResolvedValue({ error: new Error('DB error') })
+    const mockMaybeSingle = jest.fn().mockResolvedValue({ data: null })
+    const mockEq2 = jest.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
+    const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
+    const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 })
+    mockCreateClient.mockResolvedValue({
+      auth: { getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } }) },
+      from: jest.fn().mockReturnValue({ select: mockSelect, insert: mockInsert }),
+    })
+    await toggleLikeAction('note-1')
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })
 
@@ -70,6 +88,11 @@ describe('createCommentAction', () => {
   it('content가 500자 초과면 에러를 반환한다', async () => {
     const result = await createCommentAction(null, makeFormData({ note_id: 'note-1', content: 'a'.repeat(501) }))
     expect(result).toEqual({ error: '댓글은 500자 이하로 입력해주세요' })
+  })
+
+  it('note_id가 없으면 에러를 반환한다', async () => {
+    const result = await createCommentAction(null, makeFormData({ content: '좋아요!' }))
+    expect(result).toEqual({ error: '노트 정보가 없습니다' })
   })
 
   it('비로그인 시 에러를 반환한다', async () => {
@@ -106,11 +129,13 @@ describe('createCommentAction', () => {
 // ─── deleteCommentAction ─────────────────────────────────────────
 describe('deleteCommentAction', () => {
   it('비로그인 시 아무 것도 하지 않는다', async () => {
+    const mockFrom = jest.fn()
     mockCreateClient.mockResolvedValue({
       auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
-      from: jest.fn(),
+      from: mockFrom,
     })
     await deleteCommentAction('comment-1', 'note-1')
+    expect(mockFrom).not.toHaveBeenCalled()
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 
@@ -126,5 +151,17 @@ describe('deleteCommentAction', () => {
     expect(mockEq1).toHaveBeenCalledWith('id', 'comment-1')
     expect(mockEq2).toHaveBeenCalledWith('user_id', 'user-1')
     expect(mockRevalidatePath).toHaveBeenCalledWith('/cupping/note-1')
+  })
+
+  it('delete 실패 시 revalidatePath를 호출하지 않는다', async () => {
+    const mockEq2 = jest.fn().mockResolvedValue({ error: new Error('DB error') })
+    const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
+    const mockDelete = jest.fn().mockReturnValue({ eq: mockEq1 })
+    mockCreateClient.mockResolvedValue({
+      auth: { getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } }) },
+      from: jest.fn().mockReturnValue({ delete: mockDelete }),
+    })
+    await deleteCommentAction('comment-1', 'note-1')
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })
