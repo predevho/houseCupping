@@ -21,10 +21,16 @@
 - 가공방식 선택: Washed / Natural / Honey / Anaerobic
 - 로스팅 선택: Light / Medium / Dark / Extra Dark
 
+## 업데이트 내역
+
+### 2026-05-15 — 커핑 노트 섹션 추가
+- `/beans/[id]`: 커핑 노트 목록 표시 (aroma/acidity/body, 로스팅일, 메모, 작성자, 날짜)
+- "+ 노트 작성" 링크 → `/cupping/new?beanId={id}`
+- 커핑 노트 없을 때 빈 상태 메시지 "아직 커핑 노트가 없어요" 표시
+
 ## 범위 외 (추후 추가)
 
 - 원두 목록 페이지 (`/beans`)
 - 원두 수정
 - 원두 삭제 (admin 전용)
 - 이미지 업로드 (Supabase Storage + image_url 컬럼 마이그레이션 필요)
-- 커핑 노트 섹션 (Cupping 도메인 구현 후)

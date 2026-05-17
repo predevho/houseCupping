@@ -1,5 +1,5 @@
 CREATE TABLE public.beans (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   cafe_name TEXT NOT NULL,
   bean_name TEXT NOT NULL,

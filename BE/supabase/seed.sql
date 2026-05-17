@@ -30,32 +30,30 @@ VALUES
    '{"sub": "00000000-0000-0000-0000-000000000002", "email": "tester2@example.com"}',
    NOW(), NOW(), NOW());
 
--- Sample beans
+-- Sample beans (OVERRIDING SYSTEM VALUE: explicit IDs 1, 2 for predictable URLs)
 INSERT INTO public.beans (id, user_id, cafe_name, bean_name, origin, variety, process, roast_level, altitude, farm_name, harvest_year, flavor_descriptors)
+OVERRIDING SYSTEM VALUE
 VALUES
-  ('10000000-0000-0000-0000-000000000001',
-   '00000000-0000-0000-0000-000000000001',
+  (1, '00000000-0000-0000-0000-000000000001',
    '모모스커피', '예가체프 G1', '에티오피아', 'Heirloom', 'Washed', 'Light',
    2200, 'Kochere Washing Station', 2024,
    ARRAY['블루베리', '자스민', '레몬그라스']),
-  ('10000000-0000-0000-0000-000000000002',
-   '00000000-0000-0000-0000-000000000002',
+  (2, '00000000-0000-0000-0000-000000000002',
    '커피리브레', '게이샤 내추럴', '파나마', 'Gesha', 'Natural', 'Light',
    1650, 'Hacienda La Esmeralda', 2024,
    ARRAY['복숭아', '망고', '로즈']);
+SELECT setval(pg_get_serial_sequence('public.beans', 'id'), 2);
 
 -- Sample cupping notes
 INSERT INTO public.cupping_notes (user_id, bean_id, aroma, acidity, body, memo)
 VALUES
-  ('00000000-0000-0000-0000-000000000002',
-   '10000000-0000-0000-0000-000000000001',
+  ('00000000-0000-0000-0000-000000000002', 1,
    4.5, 4.0, 3.0, '블루베리 향이 강하게 올라오고 산미가 밝다. 여운이 길게 남는다.'),
-  ('00000000-0000-0000-0000-000000000001',
-   '10000000-0000-0000-0000-000000000002',
+  ('00000000-0000-0000-0000-000000000001', 2,
    5.0, 3.5, 2.5, '게이샤 특유의 꽃향기가 인상적. 망고 계열의 달콤함.');
 
 -- Sample ratings
 INSERT INTO public.bean_ratings (user_id, bean_id, score)
 VALUES
-  ('00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', 4.5),
-  ('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002', 5.0);
+  ('00000000-0000-0000-0000-000000000002', 1, 4.5),
+  ('00000000-0000-0000-0000-000000000001', 2, 5.0);

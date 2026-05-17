@@ -15,7 +15,7 @@ function makeFormData(data: Record<string, string>) {
   return fd
 }
 
-const validBase = { bean_id: 'bean-123', aroma: '4.0', acidity: '3.5', body: '3.0' }
+const validBase = { bean_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0' }
 
 describe('createCuppingAction', () => {
   beforeEach(() => jest.clearAllMocks())
@@ -27,7 +27,7 @@ describe('createCuppingAction', () => {
   })
 
   it('aroma가 비어있으면 required 에러를 반환한다', async () => {
-    const fd = makeFormData({ bean_id: 'bean-123', aroma: '', acidity: '3.5', body: '3.0' })
+    const fd = makeFormData({ bean_id: '1', aroma: '', acidity: '3.5', body: '3.0' })
     const result = await createCuppingAction(null, fd)
     expect(result).toEqual({ errors: { aroma: '향미를 선택해주세요' } })
   })
@@ -73,7 +73,7 @@ describe('createCuppingAction', () => {
 
     const fd = makeFormData({ ...validBase, score: '4.5' })
     await createCuppingAction(null, fd)
-    expect(mockRedirect).toHaveBeenCalledWith('/beans/bean-123')
+    expect(mockRedirect).toHaveBeenCalledWith('/beans/1')
   })
 
   it('cupping_notes insert 실패 시 general 에러를 반환한다', async () => {
@@ -128,7 +128,7 @@ describe('createCuppingAction', () => {
     const fd = makeFormData(validBase)
     await createCuppingAction(null, fd)
     expect(mockFrom).not.toHaveBeenCalledWith('bean_ratings')
-    expect(mockRedirect).toHaveBeenCalledWith('/beans/bean-123')
+    expect(mockRedirect).toHaveBeenCalledWith('/beans/1')
   })
 })
 
@@ -232,12 +232,12 @@ describe('updateCuppingAction', () => {
       from: mockFrom,
     })
 
-    const fd = makeFormData({ note_id: 'note-1', bean_id: 'bean-1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
+    const fd = makeFormData({ note_id: 'note-1', bean_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
     await updateCuppingAction(null, fd)
 
     expect(mockFrom).toHaveBeenCalledWith('bean_ratings')
     expect(mockUpsert).toHaveBeenCalledWith(
-      { user_id: 'user-1', bean_id: 'bean-1', score: 4.5 },
+      { user_id: 'user-1', bean_id: 1, score: 4.5 },
       { onConflict: 'user_id,bean_id' }
     )
     expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')

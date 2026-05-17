@@ -13,7 +13,7 @@ interface BeanDetail {
 }
 
 interface CuppingNote {
-  id: string
+  id: number
   aroma: number
   acidity: number
   body: number
