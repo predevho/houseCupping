@@ -87,7 +87,8 @@ agent-coding/
 | `src/app/(app)/page.tsx` | 공개 홈 피드 페이지 |
 | `src/app/(app)/_actions/logout.ts` | 로그아웃 Server Action |
 | `src/components/ui/toast.tsx` | 전역 Toast Provider + `useToast` 훅 |
-| `src/components/layout/Header.tsx` | 공통 헤더 Server Component |
+| `src/components/layout/Header.tsx` | 공통 상단 nav Server Component |
+| `src/components/layout/SideNav.tsx` | 데스크톱 카테고리 nav Client Component |
 | `src/components/layout/LogoutButton.tsx` | 로그아웃 버튼 Client Component |
 | `src/components/ui/` | ShadCN 컴포넌트 |
 | `src/lib/utils.ts` | ShadCN 유틸 (cn 함수) |
