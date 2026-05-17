@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import FormSubmitButton from '../FormSubmitButton'
 
 describe('FormSubmitButton', () => {
@@ -20,5 +20,16 @@ describe('FormSubmitButton', () => {
       </FormSubmitButton>
     )
     expect(screen.getByRole('button', { name: '저장 중...' })).toBeDisabled()
+  })
+
+  it('onClick prop이 전달되면 클릭 시 호출된다', () => {
+    const onClick = jest.fn()
+    render(
+      <FormSubmitButton isPending={false} pendingLabel="저장 중..." onClick={onClick}>
+        저장
+      </FormSubmitButton>
+    )
+    fireEvent.click(screen.getByRole('button'))
+    expect(onClick).toHaveBeenCalledTimes(1)
   })
 })
