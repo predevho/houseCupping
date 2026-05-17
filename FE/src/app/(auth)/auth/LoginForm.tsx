@@ -6,7 +6,8 @@ import { loginAction, type LoginState } from './actions'
 const fieldClass = (hasError: boolean) =>
   `w-full h-10 px-3 bg-gray-50 border rounded-md text-sm outline-none transition-all
    focus:border-[#8B2635] focus:ring-2 focus:ring-[#8B2635]/15
-   ${hasError ? 'border-red-300 bg-red-50' : 'border-gray-200'}`
+   dark:bg-gray-800 dark:text-gray-100
+   ${hasError ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700' : 'border-gray-200 dark:border-gray-700'}`
 
 interface Props {
   next?: string
@@ -32,7 +33,7 @@ export default function LoginForm({ next }: Props) {
       <div>
         <label
           htmlFor="username"
-          className="block text-xs font-semibold text-gray-500 mb-1.5"
+          className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5"
         >
           아이디
         </label>
@@ -49,7 +50,7 @@ export default function LoginForm({ next }: Props) {
       <div>
         <label
           htmlFor="password"
-          className="block text-xs font-semibold text-gray-500 mb-1.5"
+          className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5"
         >
           비밀번호
         </label>
@@ -63,7 +64,7 @@ export default function LoginForm({ next }: Props) {
       </div>
 
       {state?.error && (
-        <div role="alert" className="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs text-red-600 flex items-center gap-1.5">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs text-red-600 flex items-center gap-1.5 dark:bg-red-900/20 dark:border-red-700 dark:text-red-400">
           <span aria-hidden>⚠</span> {state.error}
         </div>
       )}
