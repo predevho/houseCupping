@@ -7,7 +7,7 @@ export default async function HomePage() {
   const { data, error } = await supabase
     .from('cupping_notes')
     .select(
-      'id, aroma, acidity, body, roast_date, memo, created_at, profiles(username, display_name), beans(id, bean_name, cafe_name)'
+      'id, aroma, acidity, body, roast_date, memo, created_at, profiles(username, display_name), beans(id, bean_name, cafe_name), likes(count), comments(count)'
     )
     .order('created_at', { ascending: false })
 
