@@ -48,3 +48,4 @@
 - [x] Social 기능 — 좋아요 (`likes`) — `/cupping/[id]` LikeButton, toggleLikeAction
 - [x] Social 기능 — 댓글 작성/삭제 (`comments`) — `/cupping/[id]` CommentForm, DeleteCommentButton, Server Actions
 - [x] 원두 목록 페이지 — /beans, bean_name+cafe_name 서버사이드 통합검색 (2026-05-17)
+- [x] 공통 컴포넌트 추출 리팩터링 — FieldError, FormSubmitButton, DeleteActionButton (2026-05-17)
