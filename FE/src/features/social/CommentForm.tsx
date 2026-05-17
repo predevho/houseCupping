@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
 import { createCommentAction, type CommentFormState } from './actions'
 
 interface Props {
@@ -11,14 +12,23 @@ interface Props {
 
 export default function CommentForm({ noteId, userId }: Props) {
   const formRef = useRef<HTMLFormElement>(null)
+  const { showToast } = useToast()
   const [state, formAction, isPending] = useActionState<CommentFormState, FormData>(
     createCommentAction,
     null
   )
 
   useEffect(() => {
-    if (state?.success) formRef.current?.reset()
-  }, [state])
+    if (state?.success) {
+      formRef.current?.reset()
+      showToast({ message: '댓글이 등록되었어요', type: 'success' })
+      return
+    }
+
+    if (state?.error) {
+      showToast({ message: state.error, type: 'error' })
+    }
+  }, [showToast, state])
 
   if (!userId) {
     return <p className="text-sm text-gray-500">로그인 후 댓글을 작성할 수 있습니다.</p>
