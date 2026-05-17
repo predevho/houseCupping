@@ -17,12 +17,11 @@ export async function toggleLikeAction(noteId: string): Promise<void> {
     .eq('user_id', user.id)
     .maybeSingle()
 
-  if (existing) {
-    await supabase.from('likes').delete().match({ note_id: noteId, user_id: user.id })
-  } else {
-    await supabase.from('likes').insert({ note_id: noteId, user_id: user.id })
-  }
+  const { error } = existing
+    ? await supabase.from('likes').delete().eq('note_id', noteId).eq('user_id', user.id)
+    : await supabase.from('likes').insert({ note_id: noteId, user_id: user.id })
 
+  if (error) return
   revalidatePath(`/cupping/${noteId}`)
 }
 
@@ -35,6 +34,7 @@ export async function createCommentAction(
 
   if (!content) return { error: '댓글을 입력해주세요' }
   if (content.length > 500) return { error: '댓글은 500자 이하로 입력해주세요' }
+  if (!noteId) return { error: '노트 정보가 없습니다' }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -57,6 +57,7 @@ export async function deleteCommentAction(commentId: string, noteId: string): Pr
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id)
+  const { error } = await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id)
+  if (error) return
   revalidatePath(`/cupping/${noteId}`)
 }
