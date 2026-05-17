@@ -1,19 +1,40 @@
 'use client'
 
 import { useActionState } from 'react'
-import { createBeanAction, type CreateBeanState } from './actions'
+import { createBeanAction, type CreateBeanState, type UpdateBeanState } from './actions'
 
 const PROCESS_OPTIONS = ['Washed', 'Natural', 'Honey', 'Anaerobic']
 const ROAST_LEVEL_OPTIONS = ['Light', 'Medium', 'Dark', 'Extra Dark']
 
-export default function BeanForm() {
-  const [state, action, isPending] = useActionState<CreateBeanState, FormData>(
-    createBeanAction,
+interface BeanFormValues {
+  cafe_name: string
+  bean_name: string
+  origin: string | null
+  process: string | null
+  roast_level: string | null
+}
+
+interface Props {
+  action?: (state: CreateBeanState | UpdateBeanState, formData: FormData) => Promise<CreateBeanState | UpdateBeanState>
+  submitLabel?: string
+  initialValues?: BeanFormValues
+  beanId?: string
+}
+
+export default function BeanForm({
+  action = createBeanAction,
+  submitLabel = '원두 등록',
+  initialValues,
+  beanId,
+}: Props) {
+  const [state, formAction, isPending] = useActionState<CreateBeanState | UpdateBeanState, FormData>(
+    action,
     null
   )
 
   return (
-    <form action={action} className="flex flex-col gap-3">
+    <form action={formAction} className="flex flex-col gap-3">
+      {beanId && <input type="hidden" name="bean_id" value={beanId} />}
       <div>
         <label htmlFor="cafe_name" className="text-xs font-semibold text-gray-500">
           카페명 <span className="text-red-500">*</span>
@@ -22,6 +43,7 @@ export default function BeanForm() {
           id="cafe_name"
           name="cafe_name"
           type="text"
+          defaultValue={initialValues?.cafe_name ?? ''}
           required
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         />
@@ -40,6 +62,7 @@ export default function BeanForm() {
           id="bean_name"
           name="bean_name"
           type="text"
+          defaultValue={initialValues?.bean_name ?? ''}
           required
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         />
@@ -58,6 +81,7 @@ export default function BeanForm() {
           id="origin"
           name="origin"
           type="text"
+          defaultValue={initialValues?.origin ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         />
       </div>
@@ -69,6 +93,7 @@ export default function BeanForm() {
         <select
           id="process"
           name="process"
+          defaultValue={initialValues?.process ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         >
           <option value="">선택 안 함</option>
@@ -85,6 +110,7 @@ export default function BeanForm() {
         <select
           id="roast_level"
           name="roast_level"
+          defaultValue={initialValues?.roast_level ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         >
           <option value="">선택 안 함</option>
@@ -105,7 +131,7 @@ export default function BeanForm() {
         disabled={isPending}
         className="h-10 bg-[#8B2635] text-white rounded-md text-sm font-semibold disabled:opacity-50"
       >
-        {isPending ? '등록 중...' : '원두 등록'}
+        {isPending ? '등록 중...' : submitLabel}
       </button>
     </form>
   )

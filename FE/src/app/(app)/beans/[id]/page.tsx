@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { buildRatingSummary } from '@/features/bean/ratingSummary'
 
 interface BeanDetail {
+  id: number
+  user_id: string | null
   cafe_name: string
   bean_name: string
   origin: string | null
@@ -23,6 +26,10 @@ interface CuppingNote {
   profiles: { username: string } | null
 }
 
+interface BeanRating {
+  score: number
+}
+
 interface Props {
   params: Promise<{ id: string }>
 }
@@ -31,11 +38,14 @@ export default async function BeanDetailPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
 
-  const { data } = await supabase
+  const [{ data }, { data: authData }] = await Promise.all([
+    supabase
     .from('beans')
-    .select('cafe_name, bean_name, origin, process, roast_level, created_at, profiles(username)')
+    .select('id, user_id, cafe_name, bean_name, origin, process, roast_level, created_at, profiles(username)')
     .eq('id', id)
-    .maybeSingle()
+    .maybeSingle(),
+    supabase.auth.getUser(),
+  ])
 
   if (!data) notFound()
 
@@ -47,9 +57,17 @@ export default async function BeanDetailPage({ params }: Props) {
     .eq('bean_id', id)
     .order('created_at', { ascending: false })
 
+  const { data: ratingsData, error: ratingsError } = await supabase
+    .from('bean_ratings')
+    .select('score')
+    .eq('bean_id', id)
+
   if (notesError) console.error('cupping_notes query error:', notesError)
+  if (ratingsError) console.error('bean_ratings query error:', ratingsError)
 
   const notes = (notesData ?? []) as unknown as CuppingNote[]
+  const ratingSummary = buildRatingSummary((ratingsData ?? []) as BeanRating[])
+  const isOwner = authData.user?.id === bean.user_id
 
   const registeredBy = bean.profiles?.username ?? '알 수 없음'
 
@@ -90,6 +108,25 @@ export default async function BeanDetailPage({ params }: Props) {
       <div className="text-xs text-gray-400 pt-2 border-t border-gray-100">
         <p>등록자 @{registeredBy}</p>
         <p>등록일 {registeredAt}</p>
+      </div>
+
+      {isOwner && (
+        <div>
+          <Link href={`/beans/${bean.id}/edit`} className="text-xs text-gray-500 font-semibold">
+            수정
+          </Link>
+        </div>
+      )}
+
+      <div className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3">
+        <p className="text-xs font-semibold text-gray-500">종합 평점</p>
+        {ratingSummary ? (
+          <p className="mt-1 text-sm text-gray-700">
+            평균 {ratingSummary.average} / 5.0 · {ratingSummary.count}명 참여
+          </p>
+        ) : (
+          <p className="mt-1 text-sm text-gray-400">아직 등록된 종합 평점이 없어요</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-3 pt-2">
