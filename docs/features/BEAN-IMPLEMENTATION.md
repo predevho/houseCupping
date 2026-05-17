@@ -2,7 +2,7 @@
 
 ## 개요
 
-원두 등록, 수정, 목록 조회, 상세 조회 기능 구현.
+원두 등록, 수정, 삭제, 목록 조회, 상세 조회 기능 구현.
 
 ## 구현된 파일
 
@@ -11,6 +11,7 @@
 | `src/features/bean/actions.ts` | createBeanAction Server Action |
 | `src/features/bean/BeanForm.tsx` | 원두 등록 폼 Client Component |
 | `src/features/bean/BeanSearch.tsx` | 원두 목록 검색 폼 Client Component |
+| `src/features/bean/DeleteBeanButton.tsx` | 원두 삭제 버튼 Client Component |
 | `src/features/bean/__tests__/BeanSearch.test.tsx` | 원두 목록 검색 폼 단위 테스트 |
 | `src/app/(app)/beans/page.tsx` | 원두 목록 페이지 |
 | `src/app/(app)/beans/new/page.tsx` | 원두 등록 페이지 |
@@ -26,6 +27,7 @@
 - `/beans/[id]`: `bean_ratings.score` 기준 평균 종합 평점과 참여 인원 수 표시
 - `/beans/[id]/edit`: 등록자 본인만 수정 가능, 기존 값 pre-fill
 - 원두 상세 페이지에서 본인 원두면 `수정` 링크 표시
+- 원두 상세 페이지에서 admin이면 `삭제` 버튼 표시, 삭제 성공 시 `/beans`로 redirect
 - 가공방식 선택: Washed / Natural / Honey / Anaerobic
 - 로스팅 선택: Light / Medium / Dark / Extra Dark
 
@@ -57,7 +59,11 @@
 - `updateBeanAction` Server Action 추가
 - `/beans/[id]/edit`: 본인 원두만 수정 가능, 수정 완료 시 상세 페이지로 redirect
 
+### 2026-05-17 — 원두 삭제 추가
+- `deleteBeanAction` Server Action 추가
+- 원두 상세 페이지에서 admin에게만 삭제 버튼 표시
+- 삭제 성공 시 `/beans`로 redirect
+
 ## 범위 외 (추후 추가)
 
-- 원두 삭제 (admin 전용)
 - 이미지 업로드 (Supabase Storage + image_url 컬럼 마이그레이션 필요)

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { buildRatingSummary } from '@/features/bean/ratingSummary'
+import DeleteBeanButton from '@/features/bean/DeleteBeanButton'
 
 interface BeanDetail {
   id: number
@@ -68,6 +69,7 @@ export default async function BeanDetailPage({ params }: Props) {
   const notes = (notesData ?? []) as unknown as CuppingNote[]
   const ratingSummary = buildRatingSummary((ratingsData ?? []) as BeanRating[])
   const isOwner = authData.user?.id === bean.user_id
+  const isAdmin = authData.user?.app_metadata?.role === 'admin'
 
   const registeredBy = bean.profiles?.username ?? '알 수 없음'
 
@@ -110,11 +112,14 @@ export default async function BeanDetailPage({ params }: Props) {
         <p>등록일 {registeredAt}</p>
       </div>
 
-      {isOwner && (
-        <div>
-          <Link href={`/beans/${bean.id}/edit`} className="text-xs text-gray-500 font-semibold">
-            수정
-          </Link>
+      {(isOwner || isAdmin) && (
+        <div className="flex items-center gap-3">
+          {isOwner && (
+            <Link href={`/beans/${bean.id}/edit`} className="text-xs text-gray-500 font-semibold">
+              수정
+            </Link>
+          )}
+          {isAdmin && <DeleteBeanButton beanId={String(bean.id)} />}
         </div>
       )}
 

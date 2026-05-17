@@ -149,6 +149,7 @@ agent-coding/
 | 타인 프로필 조회 (`/profile/[username]`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
 | 원두 등록 (`/beans/new`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 수정 (`/beans/[id]/edit`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 삭제 (admin 전용) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 목록 (`/beans`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 상세 조회 + 평균 평점 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 커핑 노트 목록 (`/cupping`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
