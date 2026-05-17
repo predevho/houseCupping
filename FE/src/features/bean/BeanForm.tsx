@@ -1,6 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
+import FieldError from '@/components/ui/FieldError'
+import FormSubmitButton from '@/components/ui/FormSubmitButton'
 import { createBeanAction, type CreateBeanState, type UpdateBeanState } from './actions'
 
 const PROCESS_OPTIONS = ['Washed', 'Natural', 'Honey', 'Anaerobic']
@@ -48,11 +50,7 @@ export default function BeanForm({
           required
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         />
-        {state?.errors?.cafe_name && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.cafe_name}
-          </p>
-        )}
+        <FieldError message={state?.errors?.cafe_name} />
       </div>
 
       <div>
@@ -67,11 +65,7 @@ export default function BeanForm({
           required
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         />
-        {state?.errors?.bean_name && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.bean_name}
-          </p>
-        )}
+        <FieldError message={state?.errors?.bean_name} />
       </div>
 
       <div>
@@ -133,26 +127,14 @@ export default function BeanForm({
           className="w-full text-sm text-gray-600 dark:text-gray-300 file:mr-3 file:px-3 file:py-2 file:border-0 file:rounded-md file:bg-gray-100 file:text-gray-700 dark:file:bg-gray-700 dark:file:text-gray-300"
         />
         <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">JPG, PNG, WebP / 최대 5MB</p>
-        {state?.errors?.image && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.image}
-          </p>
-        )}
+        <FieldError message={state?.errors?.image} />
       </div>
 
-      {state?.errors?.general && (
-        <p role="alert" className="text-xs text-red-600">
-          {state.errors.general}
-        </p>
-      )}
+      <FieldError message={state?.errors?.general} />
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="h-10 bg-[#8B2635] text-white rounded-md text-sm font-semibold disabled:opacity-50"
-      >
-        {isPending ? '등록 중...' : submitLabel}
-      </button>
+      <FormSubmitButton isPending={isPending} pendingLabel="등록 중...">
+        {submitLabel}
+      </FormSubmitButton>
     </form>
   )
 }
