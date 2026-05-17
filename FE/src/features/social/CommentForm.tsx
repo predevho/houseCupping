@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toast'
@@ -31,7 +32,11 @@ export default function CommentForm({ noteId, userId }: Props) {
   }, [showToast, state])
 
   if (!userId) {
-    return <p className="text-sm text-gray-500">로그인 후 댓글을 작성할 수 있습니다.</p>
+    return (
+      <Link href={`/auth?next=/cupping/${noteId}`} className="text-sm text-amber-700 underline">
+        로그인하고 댓글 쓰기
+      </Link>
+    )
   }
 
   return (

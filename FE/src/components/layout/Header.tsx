@@ -14,8 +14,17 @@ export default async function Header() {
     <header>
       <Link href="/">☕ House Cupping</Link>
       <nav>
-        <Link href="/profile">{username}</Link>
-        <LogoutButton />
+        {user ? (
+          <>
+            <Link href="/profile">{username}</Link>
+            <LogoutButton />
+          </>
+        ) : (
+          <>
+            <Link href="/auth">로그인</Link>
+            <Link href="/auth">회원가입</Link>
+          </>
+        )}
       </nav>
     </header>
   )
