@@ -6,10 +6,11 @@
 
 ```sql
 beans (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   cafe_name TEXT NOT NULL,
   bean_name TEXT NOT NULL,
+  image_path TEXT,
   origin TEXT,
   variety TEXT,               -- 품종 (예: Gesha, Bourbon)
   process TEXT,               -- 가공 방식 (예: Washed, Natural)
@@ -36,6 +37,14 @@ beans (
 | beans_insert_authenticated | INSERT | `auth.uid() = user_id` |
 | beans_update_own | UPDATE | `auth.uid() = user_id` |
 | beans_delete_admin | DELETE | `(auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'` |
+
+### Storage
+
+- 버킷: `beans` (public)
+- 저장 값: `beans.image_path`
+- 업로드 경로 규칙: `{user_id}/{timestamp}-{sanitizedFileName}`
+- 허용 형식: `image/jpeg`, `image/png`, `image/webp`
+- 파일 크기 제한: 5MB
 
 ### 타입
 

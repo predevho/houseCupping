@@ -6,22 +6,22 @@
 
 ```sql
 cupping_notes (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  bean_id UUID REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
+  bean_id BIGINT REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
   roast_date DATE,
-  aroma INTEGER NOT NULL CHECK (aroma BETWEEN 1 AND 10),
-  acidity INTEGER NOT NULL CHECK (acidity BETWEEN 1 AND 10),
-  body INTEGER NOT NULL CHECK (body BETWEEN 1 AND 10),
+  aroma NUMERIC(3,1) NOT NULL CHECK (aroma >= 0.5 AND aroma <= 5.0 AND aroma % 0.5 = 0),
+  acidity NUMERIC(3,1) NOT NULL CHECK (acidity >= 0.5 AND acidity <= 5.0 AND acidity % 0.5 = 0),
+  body NUMERIC(3,1) NOT NULL CHECK (body >= 0.5 AND body <= 5.0 AND body % 0.5 = 0),
   memo TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 )
 
 bean_ratings (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  bean_id UUID REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
-  score NUMERIC(3,1) NOT NULL CHECK (score >= 0.5 AND score <= 10.0 AND score % 0.5 = 0),
+  bean_id BIGINT REFERENCES public.beans(id) ON DELETE CASCADE NOT NULL,
+  score NUMERIC(3,1) NOT NULL CHECK (score >= 0.5 AND score <= 5.0 AND score % 0.5 = 0),
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   UNIQUE (user_id, bean_id)
 )
@@ -29,8 +29,8 @@ bean_ratings (
 
 ### 점수 유효성 규칙
 
-- `aroma`, `acidity`, `body`: 1 이상 10 이하 정수
-- `score`: 0.5 단위, 0.5 이상 10.0 이하 (0.5, 1.0, 1.5, ..., 10.0)
+- `aroma`, `acidity`, `body`: 0.5 단위, 0.5 이상 5.0 이하 (0.5, 1.0, 1.5, ..., 5.0)
+- `score`: 0.5 단위, 0.5 이상 5.0 이하 (0.5, 1.0, 1.5, ..., 5.0)
 
 ### 인덱스
 

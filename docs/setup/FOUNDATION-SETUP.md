@@ -6,6 +6,7 @@
 agent-coding/
 ├── FE/                          # Next.js 15 프론트엔드
 ├── BE/                          # Supabase 백엔드
+│   └── supabase/                # canonical Supabase project root
 ├── docs/                        # 내부 문서 (gitignore)
 │   ├── CONTEXT.md
 │   ├── setup/        → 세팅 문서
@@ -33,7 +34,10 @@ agent-coding/
 
 ---
 
-## BE — Supabase 마이그레이션 (13개)
+## BE — Supabase 마이그레이션 (16개)
+
+- 마이그레이션과 `config.toml`, `seed.sql`의 기준 위치는 `BE/supabase/`이다.
+- 루트 `/supabase` 폴더는 Supabase CLI가 생성한 로컬 메타데이터일 수 있으며, 프로젝트 기준 경로로 사용하지 않는다.
 
 | 파일 | 내용 |
 |---|---|
@@ -50,6 +54,9 @@ agent-coding/
 | 011 | beans.user_id → ON DELETE SET NULL (탈퇴 시 원두 보존) |
 | 012 | username 자동 생성 시 허용 외 문자 `_`로 치환 |
 | 013 | profiles.email 컬럼 추가, username 4~16자, display_name NOT NULL 4~12자, 트리거 수정 |
+| 014 | bean_ratings score 범위 0.5~5.0 제약 |
+| 015 | cupping_notes aroma/acidity/body NUMERIC 0.5~5.0 제약 |
+| 016 | beans.image_path 컬럼 + public `beans` Storage bucket + 업로드/삭제 정책 |
 
 ---
 
@@ -74,9 +81,22 @@ agent-coding/
 | `src/lib/supabase/server.ts` | 서버용 Supabase 클라이언트 |
 | `src/types/database.ts` | DB 타입 전체 정의 |
 | `middleware.ts` | 세션 갱신 + 라우트 보호 (PUBLIC_ROUTES: `['/auth']`) |
+| `src/app/(app)/layout.tsx` | 인증된 페이지 공통 레이아웃 (Header 포함) |
+| `src/app/(app)/error.tsx` | 인증된 페이지 공통 에러 UI |
+| `src/app/(app)/loading.tsx` | 인증된 페이지 공통 로딩 UI |
+| `src/app/(app)/page.tsx` | 공개 홈 피드 페이지 |
+| `src/app/(app)/_actions/logout.ts` | 로그아웃 Server Action |
+| `src/components/ui/toast.tsx` | 전역 Toast Provider + `useToast` 훅 |
+| `src/components/layout/Header.tsx` | 공통 상단 nav Server Component |
+| `src/components/layout/SideNav.tsx` | 데스크톱 카테고리 nav Client Component (`홈 / 원두 / 커핑 노트`) |
+| `src/components/layout/LogoutButton.tsx` | 로그아웃 버튼 Client Component |
 | `src/components/ui/` | ShadCN 컴포넌트 |
 | `src/lib/utils.ts` | ShadCN 유틸 (cn 함수) |
 | `src/app/globals.css` | Tailwind v4 + ShadCN 테마 + DaisyUI |
+| `src/features/member/EditForm.tsx` | 프로필 수정 폼 Client Component |
+| `src/features/member/actions.ts` | 프로필 수정 Server Action |
+| `src/features/bean/BeanForm.tsx` | 원두 등록 폼 Client Component |
+| `src/features/bean/actions.ts` | 원두 등록/수정/삭제 Server Action |
 
 ---
 
@@ -123,11 +143,47 @@ agent-coding/
 | 기능 | 문서 |
 |---|---|
 | 인증 UI (`/auth` — 로그인·회원가입 탭) | `docs/features/AUTH-IMPLEMENTATION.md` |
+| 인증 후 원래 페이지 복귀 (`/auth?next=...`) | `docs/features/AUTH-IMPLEMENTATION.md` |
+| 이메일 인증 대기 안내 (`/auth/verify-email`) | `docs/features/AUTH-IMPLEMENTATION.md` |
 | 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
+| 인증 영역 공통 에러 UI (`src/app/(app)/error.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
+| 인증 영역 공통 로딩 UI (`src/app/(app)/loading.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
+| 전역 Toast 알림 + 댓글 등록 연동 | `docs/setup/FOUNDATION-SETUP.md` |
+| 프로필 수정 UX 고도화 (입력 힌트, 길이 제한, 성공 토스트) | `docs/features/MEMBER-IMPLEMENTATION.md` |
+| 내 프로필 조회·수정 (`/profile`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
+| 타인 프로필 조회 (`/profile/[username]`) | `docs/features/MEMBER-IMPLEMENTATION.md` |
+| 원두 등록 (`/beans/new`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 수정 (`/beans/[id]/edit`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 삭제 (admin 전용) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 이미지 업로드 (등록/수정, 목록/상세 표시) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 목록 (`/beans`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 원두 상세 조회 + 평균 평점 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 공개 홈 피드 (`/` — 최신 커핑 노트) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 목록 (`/cupping`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 등록 (`/cupping/new`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 상세 조회 (`/cupping/[id]`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 수정 (`/cupping/[id]/edit`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 노트 삭제 | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 점수 원형 입력/표시 UI (0.5점 클릭·드래그) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 원두/커핑 상세 액션 버튼 개선 (`수정 / 삭제`) | `docs/features/CUPPING-IMPLEMENTATION.md`, `docs/features/BEAN-IMPLEMENTATION.md` |
+| 좋아요 토글 (`/cupping/[id]`) | `docs/features/SOCIAL-IMPLEMENTATION.md` |
+| 댓글 작성/삭제 (`/cupping/[id]`) | `docs/features/SOCIAL-IMPLEMENTATION.md` |
+| 다크모드 대비 및 hover/active/focus 상호작용 상태 통일 | `docs/features/LAYOUT-IMPLEMENTATION.md`, `docs/features/BEAN-IMPLEMENTATION.md`, `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 로스팅 날짜 입력/저장 검증 | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 베타 배포 가이드 | `docs/setup/BETA-DEPLOYMENT.md` |
+| 루트 프로젝트 소개 문서 | `README.md` |
 
 ---
 
+## 배포 상태
+
+- 베타 배포 가능한 수준까지 핵심 기능 구현 완료
+- README 및 배포 가이드 작성 완료
+- 로컬 production build, lint, test 검증 완료
+- 남은 것은 운영 환경 연결과 실제 배포 스모크 테스트
+
 ## 다음 작업
 
-- [ ] 원두 등록 폼 UI
-- [ ] 커핑 노트 작성 폼 UI
+- [ ] 실제 배포 환경 연결 및 베타 스모크 테스트
+- [ ] 이메일 인증 운영 활성화 여부 최종 결정
+- [ ] 베타 사용자 피드백 수집 루프 시작

@@ -1,0 +1,34 @@
+# Member — 구현 문서
+
+## 개요
+
+회원 프로필 조회 및 수정 기능 구현.
+
+## 구현된 파일
+
+| 파일 | 역할 |
+|------|------|
+| `src/features/member/actions.ts` | updateProfileAction Server Action |
+| `src/features/member/EditForm.tsx` | 프로필 수정 폼 Client Component |
+| `src/app/(app)/profile/page.tsx` | 내 프로필 페이지 (조회 + 수정) |
+| `src/app/(app)/profile/[username]/page.tsx` | 타인 프로필 페이지 (읽기 전용) |
+
+## 동작
+
+- `/profile`: 로그인한 사용자의 username/display_name/가입일 표시 + 인라인 수정 폼
+- `/profile/[username]`: 해당 username 사용자의 프로필 표시 (없으면 404)
+- username 수정 시 중복 확인 (자기 자신 제외, `.neq('id', user.id)`), 유효성 검사 (4~16자, 영문/숫자/_/-)
+- display_name 수정 시 유효성 검사 (4~12자)
+- 수정 성공 시 `revalidatePath('/profile')`로 페이지 갱신 + 성공 토스트 표시
+- username 중복 확인에 `.maybeSingle()` 사용 (없으면 null 반환)
+
+## 업데이트 내역
+
+### 2026-05-17 — 프로필 수정 UX 고도화
+- `EditForm`에 username/display_name 입력 힌트 추가
+- `minLength`, `maxLength`, `pattern` 속성으로 클라이언트 제약 명시
+- 수정 성공 시 `ToastProvider` 기반 성공 토스트 `프로필이 저장되었어요` 표시
+
+## 범위 외 (추후 추가)
+
+- 커핑 노트 목록, 원두 목록 (Bean/Cupping 도메인 구현 후)

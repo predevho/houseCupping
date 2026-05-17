@@ -3,8 +3,9 @@
 ## 공통 도메인 핵심 원칙
 
 ### 1. 식별자
-- 모든 레코드의 기본키는 UUID를 사용한다 (`gen_random_uuid()`).
-- 외부에 노출되는 ID는 UUID 형식을 유지한다.
+- `profiles` 테이블의 기본키는 `UUID`이며 `auth.users(id)`를 참조한다.
+- `beans`, `cupping_notes`, `bean_ratings`, `likes`, `comments` 테이블의 기본키는 `BIGINT GENERATED ALWAYS AS IDENTITY`를 사용한다.
+- 외부에 노출되는 ID는 순번 정수(`/beans/1`, `/cupping/1`)로 URL에 표시된다.
 
 ### 2. 타임스탬프
 - 모든 테이블은 `created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL` 컬럼을 가진다.
