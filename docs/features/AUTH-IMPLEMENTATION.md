@@ -2,7 +2,7 @@
 
 - **구현일**: 2026-05-13
 - **관련 도메인**: Member
-- **라우트**: `/auth`
+- **라우트**: `/auth`, `/auth/verify-email`
 
 ---
 
@@ -11,6 +11,7 @@
 `/auth` 페이지 하나에서 로그인과 회원가입을 탭 전환으로 처리한다.
 로그인은 **아이디(username) 기반**으로 `profiles` 테이블에서 email을 역조회한 뒤 Supabase `signInWithPassword`를 호출한다.
 `next` query string이 있으면 로그인/회원가입 성공 후 원래 보던 페이지로 복귀한다.
+이메일 인증이 활성화된 환경에서 회원가입 직후 세션이 없으면 `/auth/verify-email`로 이동해 메일 확인을 안내한다.
 
 ---
 
@@ -30,7 +31,9 @@ LoginForm / SignupForm (Client Component)
   └─ useActionState(loginAction | signupAction, null)
        └─ actions.ts ('use server')
             ├─ loginAction  → profiles 역조회 → signInWithPassword → redirect(next || '/')
-            └─ signupAction → username 중복 체크 → signUp → redirect(next || '/')
+            └─ signupAction → username 중복 체크 → signUp
+                ├─ session 있음  → redirect(next || '/')
+                └─ session 없음 → redirect('/auth/verify-email')
 ```
 
 ---
@@ -43,8 +46,10 @@ LoginForm / SignupForm (Client Component)
 | `FE/src/app/auth/AuthTabs.tsx` | 탭 상태 관리 (`useState<'login' \| 'signup'>`) |
 | `FE/src/app/auth/LoginForm.tsx` | 아이디·비밀번호 입력 폼, `useActionState` + `loginAction` |
 | `FE/src/app/auth/SignupForm.tsx` | 5개 필드 회원가입 폼, `useActionState` + `signupAction` |
+| `FE/src/app/auth/verify-email/page.tsx` | 이메일 인증 대기 안내 페이지 |
 | `FE/src/app/auth/actions.ts` | `'use server'` — `loginAction`, `signupAction` |
-| `FE/src/app/auth/__tests__/actions.test.ts` | Server Actions 단위 테스트 (6개) |
+| `FE/src/app/auth/__tests__/actions.test.ts` | Server Actions 단위 테스트 (11개) |
+| `FE/src/app/auth/verify-email/__tests__/page.test.tsx` | 이메일 인증 안내 페이지 테스트 |
 | `FE/src/app/auth/__tests__/AuthTabs.test.tsx` | 탭 전환 동작 테스트 (3개) |
 | `FE/src/app/auth/__tests__/LoginForm.test.tsx` | 렌더링·에러·pending 테스트 (3개) |
 | `FE/src/app/auth/__tests__/SignupForm.test.tsx` | 렌더링·에러·비밀번호 확인 테스트 (4개) |
@@ -93,7 +98,8 @@ FormData(username, display_name, email, password, next?)
       → 'already registered' → { errors: { email: '이미 가입된 이메일입니다' } }
       → 기타 에러 → { errors: { general: '잠시 후 다시 시도해주세요' } }
       → 성공 → sanitizeNextPath(next)
-      → redirect(next 또는 '/')
+      → data.session 없음 → `/auth/verify-email` (next가 있으면 query 유지)
+      → data.session 있음 → redirect(next 또는 '/')
 ```
 
 ### 상태 타입
@@ -144,11 +150,12 @@ url.pathname = '/auth'
 
 | 파일 | 테스트 수 | 커버리지 |
 |------|-----------|----------|
-| `actions.test.ts` | 10 | loginAction 5케이스, signupAction 5케이스 |
+| `actions.test.ts` | 11 | loginAction 5케이스, signupAction 6케이스 |
+| `verify-email/page.test.tsx` | 1 | 안내 문구, 로그인 링크 |
 | `AuthTabs.test.tsx` | 5 | 초기 상태, 탭 전환, `next` 전달 |
 | `LoginForm.test.tsx` | 4 | 렌더링, 에러 표시, pending, hidden `next` |
 | `SignupForm.test.tsx` | 5 | 필드 렌더링, username 에러, 비밀번호 불일치, pending, hidden `next` |
-| **합계** | **24** | **전체 PASS** |
+| **합계** | **26** | **전체 PASS** |
 
 ---
 
@@ -156,7 +163,7 @@ url.pathname = '/auth'
 
 | 항목 | 내용 |
 |------|------|
-| 이메일 인증 | Supabase 이메일 확인이 활성화된 경우 회원가입 직후 세션 없이 `/`로 redirect될 수 있음. 현재 프로젝트 설정에서는 비활성화 전제 |
+| 이메일 인증 설정 | 로컬 기본값은 `BE/supabase/config.toml`의 `auth.email.enable_confirmations = false` 유지. 배포에서 활성화해도 프론트는 `session` 유무 기준으로 대응 가능 |
 | 비밀번호 확인 | React 19 + JSDOM에서 `fireEvent.click`이 `onSubmit`을 트리거하지 않는 이슈로, 버튼 `onClick`에 별도 검증 로직 존재 (`handleButtonClick`) |
 | Supabase 타입 추론 | `.single()` 반환 타입이 `never`로 추론되는 이슈로 수동 타입 단언 사용: `as { email: string \| null } \| null` |
 
@@ -177,7 +184,3 @@ url.pathname = '/auth'
 - `overflow-y-auto` — 폼 내용 초과 시 스크롤
 
 ---
-
-## 다음 작업
-
-- [ ] 이메일 인증 활성화 여부 결정 및 처리

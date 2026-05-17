@@ -49,3 +49,13 @@
 - [x] Social 기능 — 댓글 작성/삭제 (`comments`) — `/cupping/[id]` CommentForm, DeleteCommentButton, Server Actions
 - [x] 원두 목록 페이지 — /beans, bean_name+cafe_name 서버사이드 통합검색 (2026-05-17)
 - [x] 공통 컴포넌트 추출 리팩터링 — FieldError, FormSubmitButton, DeleteActionButton (2026-05-17)
+- [x] 인증 UI — 이메일 인증 활성화 대응 플로우 (`session` 없음 → `/auth/verify-email`) + 안내 페이지 추가 (2026-05-17)
+- [x] 다크모드 가독성 개선 — 홈/프로필/원두/커핑 상세 회색 텍스트 `dark:` 클래스 보강 및 회귀 테스트 추가 (2026-05-17)
+- [x] 목록/네비/카드 상호작용 통일 — hover/active/focus-visible/cursor 상태 보강 및 회귀 테스트 추가 (2026-05-17)
+- [x] 커핑 로스팅 날짜 검증 — 오늘 날짜 `max`, 4자리 연도 강제, 비정상 날짜 차단 (2026-05-17)
+- [x] 커핑 점수 UI 전환 — 향미/산미/바디/종합 평점을 0.5점 단위 원형 클릭·드래그 입력으로 통일, 목록/상세 원형 표시 적용 (2026-05-17)
+- [x] 원두/커핑 상세 액션 개선 — `수정 / 삭제`를 더 크고 명확한 버튼형 액션으로 정리 (2026-05-17)
+- [x] 베타 배포 문서화 — 루트 `README.md`, `FE/.env.example`, `docs/setup/BETA-DEPLOYMENT.md` 작성 및 내부 문서 최신화 (2026-05-17)
+- [x] 배포 안정화 — `next/font/google` 제거로 네트워크 없는 환경에서도 production build 가능하도록 정리, `npm run build` 검증 완료 (2026-05-17)
+- [x] 원두 조회 안정화 — `image_path` 컬럼 미반영 환경 fallback 조회 + 상세 조회 실패 시 한국어 에러 처리 (2026-05-17)
+- [x] 레이아웃 테스트 정리 — SideNav 3개 항목 기준 반영, Header/LogoutButton/ThemeToggle 테스트 문법 및 기대값 정리 (2026-05-17)

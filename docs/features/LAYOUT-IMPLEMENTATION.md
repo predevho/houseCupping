@@ -18,9 +18,12 @@ Route Group으로 인증/앱 레이아웃을 분리하고, 모던 상단 nav와 
 ## 동작
 
 - 모든 앱 페이지(`/`, `/profile`, `/bean` 등)에 Header 자동 적용
-- 데스크톱에서는 `홈 / 원두 / 커핑 노트 / 프로필` 좌측 SideNav 표시
+- 데스크톱에서는 `홈 / 원두 / 커핑 노트` 좌측 SideNav 표시
 - 모바일에서는 SideNav를 숨기고 상단 nav만 유지
 - `/auth` 페이지는 헤더 없이 독립 레이아웃 유지
 - 로그아웃 클릭 → `supabase.auth.signOut()` → `/auth` redirect
+- `LogoutButton`은 상단 nav 안에서 pill 스타일 버튼으로 렌더링
 - Header에 로그인 사용자 username 표시 (없으면 '프로필' fallback)
 - signOut이 throw해도 `/auth`로 redirect 보장 (try/catch)
+- Header, SideNav, LogoutButton, 상단 액션 링크에 hover/active/focus-visible 상태 통일
+- 앱 레이아웃 배경에 다크모드 전용 배경색 적용

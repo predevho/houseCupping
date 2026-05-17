@@ -28,8 +28,8 @@
 - `/beans/[id]`: 원두 상세 정보와 대표 이미지 표시, 탈퇴 회원의 원두는 등록자 '알 수 없음' 표시
 - `/beans/[id]`: `bean_ratings.score` 기준 평균 종합 평점과 참여 인원 수 표시
 - `/beans/[id]/edit`: 등록자 본인만 수정 가능, 기존 값 pre-fill, 새 대표 이미지로 교체 가능
-- 원두 상세 페이지에서 본인 원두면 `수정` 링크 표시
-- 원두 상세 페이지에서 admin이면 `삭제` 버튼 표시, 삭제 성공 시 `/beans`로 redirect
+- 원두 상세 페이지에서 본인 원두면 버튼형 `수정` 액션 표시
+- 원두 상세 페이지에서 admin이면 버튼형 `삭제` 액션 표시, 삭제 성공 시 `/beans`로 redirect
 - 가공방식 선택: Washed / Natural / Honey / Anaerobic
 - 로스팅 선택: Light / Medium / Dark / Extra Dark
 
@@ -39,6 +39,7 @@
 - `/beans`: Server Component에서 Supabase로 원두 목록을 최신순 조회
 - `BeanSearch`: `<form method="GET">` 기반 검색 폼, `q` 유지
 - 검색 대상: `bean_name`, `cafe_name`
+- 검색 버튼, 상단 액션 링크, 원두 카드에 hover/active/focus-visible 상태 통일
 - 빈 상태 메시지 분기
   - 검색어 있음: `검색 결과가 없어요`
   - 검색어 없음: `아직 등록된 원두가 없어요`
@@ -74,3 +75,11 @@
 - 크기 제한: 5MB
 - 업로드 성공 시 `image_path` 저장
 - `/beans` 목록에 썸네일 표시, `/beans/[id]` 상세에 대표 이미지 표시
+- `image_path` 컬럼이 아직 반영되지 않은 환경에서는 `/beans` 목록을 이미지 없이 fallback 조회
+- `image_path` 컬럼이 아직 반영되지 않은 환경에서는 `/beans/[id]` 상세도 이미지 없이 fallback 조회
+- 원두 상세 조회 자체가 실패하면 `notFound()`로 삼키지 않고 한국어 에러를 `throw`
+- 다크모드에서 목록/상세 카드와 보조 텍스트 대비 강화
+
+### 2026-05-17 — 원두 상세 액션 버튼 개선
+- `/beans/[id]`의 `수정 / 삭제`를 더 큰 버튼형 액션으로 정리
+- 기존 hover/active/focus-visible 상호작용 규칙을 동일하게 적용

@@ -88,7 +88,7 @@ agent-coding/
 | `src/app/(app)/_actions/logout.ts` | 로그아웃 Server Action |
 | `src/components/ui/toast.tsx` | 전역 Toast Provider + `useToast` 훅 |
 | `src/components/layout/Header.tsx` | 공통 상단 nav Server Component |
-| `src/components/layout/SideNav.tsx` | 데스크톱 카테고리 nav Client Component |
+| `src/components/layout/SideNav.tsx` | 데스크톱 카테고리 nav Client Component (`홈 / 원두 / 커핑 노트`) |
 | `src/components/layout/LogoutButton.tsx` | 로그아웃 버튼 Client Component |
 | `src/components/ui/` | ShadCN 컴포넌트 |
 | `src/lib/utils.ts` | ShadCN 유틸 (cn 함수) |
@@ -144,6 +144,7 @@ agent-coding/
 |---|---|
 | 인증 UI (`/auth` — 로그인·회원가입 탭) | `docs/features/AUTH-IMPLEMENTATION.md` |
 | 인증 후 원래 페이지 복귀 (`/auth?next=...`) | `docs/features/AUTH-IMPLEMENTATION.md` |
+| 이메일 인증 대기 안내 (`/auth/verify-email`) | `docs/features/AUTH-IMPLEMENTATION.md` |
 | 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
 | 인증 영역 공통 에러 UI (`src/app/(app)/error.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
 | 인증 영역 공통 로딩 UI (`src/app/(app)/loading.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
@@ -163,11 +164,26 @@ agent-coding/
 | 커핑 노트 상세 조회 (`/cupping/[id]`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 수정 (`/cupping/[id]/edit`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 삭제 | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 점수 원형 입력/표시 UI (0.5점 클릭·드래그) | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 원두/커핑 상세 액션 버튼 개선 (`수정 / 삭제`) | `docs/features/CUPPING-IMPLEMENTATION.md`, `docs/features/BEAN-IMPLEMENTATION.md` |
 | 좋아요 토글 (`/cupping/[id]`) | `docs/features/SOCIAL-IMPLEMENTATION.md` |
 | 댓글 작성/삭제 (`/cupping/[id]`) | `docs/features/SOCIAL-IMPLEMENTATION.md` |
+| 다크모드 대비 및 hover/active/focus 상호작용 상태 통일 | `docs/features/LAYOUT-IMPLEMENTATION.md`, `docs/features/BEAN-IMPLEMENTATION.md`, `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 커핑 로스팅 날짜 입력/저장 검증 | `docs/features/CUPPING-IMPLEMENTATION.md` |
+| 베타 배포 가이드 | `docs/setup/BETA-DEPLOYMENT.md` |
+| 루트 프로젝트 소개 문서 | `README.md` |
 
 ---
 
+## 배포 상태
+
+- 베타 배포 가능한 수준까지 핵심 기능 구현 완료
+- README 및 배포 가이드 작성 완료
+- 로컬 production build, lint, test 검증 완료
+- 남은 것은 운영 환경 연결과 실제 배포 스모크 테스트
+
 ## 다음 작업
 
-- [ ] 이메일 인증 활성화 여부 결정 및 처리
+- [ ] 실제 배포 환경 연결 및 베타 스모크 테스트
+- [ ] 이메일 인증 운영 활성화 여부 최종 결정
+- [ ] 베타 사용자 피드백 수집 루프 시작
