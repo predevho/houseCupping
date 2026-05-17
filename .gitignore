@@ -14,3 +14,6 @@ docs/PRODUCT-PLAN.md
 # AI 에이전트 작업 규칙
 CLAUDE.md
 AGENTS.md
+
+# local Supabase CLI metadata created outside canonical BE/supabase project root
+/supabase/
