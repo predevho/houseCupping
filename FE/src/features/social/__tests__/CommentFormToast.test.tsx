@@ -14,7 +14,10 @@ jest.mock('@/components/ui/toast', () => ({
 }))
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
-  useActionState: (_action: unknown, initialState: unknown) => [initialState, jest.fn(), false],
+  useActionState: (action: unknown, initialState: unknown) => {
+    void action
+    return [initialState, jest.fn(), false]
+  },
 }))
 
 describe('CommentForm toast', () => {
@@ -23,8 +26,11 @@ describe('CommentForm toast', () => {
   })
 
   it('성공 상태일 때 성공 토스트를 띄운다', () => {
-    jest.requireMock('react').useActionState = (_: unknown, __: unknown) =>
-      [{ success: true }, jest.fn(), false]
+    jest.requireMock('react').useActionState = (action: unknown, initialState: unknown) => {
+      void action
+      void initialState
+      return [{ success: true }, jest.fn(), false]
+    }
 
     render(<CommentForm noteId="note-1" userId="user-1" />)
 
@@ -35,8 +41,11 @@ describe('CommentForm toast', () => {
   })
 
   it('에러 상태일 때 에러 토스트를 띄운다', () => {
-    jest.requireMock('react').useActionState = (_: unknown, __: unknown) =>
-      [{ error: '댓글을 입력해주세요' }, jest.fn(), false]
+    jest.requireMock('react').useActionState = (action: unknown, initialState: unknown) => {
+      void action
+      void initialState
+      return [{ error: '댓글을 입력해주세요' }, jest.fn(), false]
+    }
 
     render(<CommentForm noteId="note-1" userId="user-1" />)
 

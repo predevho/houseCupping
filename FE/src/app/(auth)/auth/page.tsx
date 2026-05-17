@@ -14,7 +14,7 @@ export default async function AuthPage({ searchParams }: Props) {
   if (user) redirect('/')
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
       <div className="w-full max-w-3xl flex shadow-lg rounded-xl overflow-hidden h-[640px]">
         {/* 왼쪽 브랜딩 패널 */}
         <div

@@ -5,7 +5,9 @@ jest.mock('@/lib/supabase/server', () => ({
   createClient: jest.fn(),
 }))
 
-jest.mock('../LogoutButton', () => () => <div data-testid="logout-button" />)
+jest.mock('../LogoutButton', () => function MockLogoutButton() {
+  return <div data-testid="logout-button" />
+})
 
 const { createClient: mockCreateClient } =
   jest.requireMock('@/lib/supabase/server')
@@ -44,6 +46,46 @@ describe('Header', () => {
     render(await Header())
     expect(screen.getByRole('link', { name: '로그인' })).toHaveAttribute('href', '/auth')
     expect(screen.getByRole('link', { name: '회원가입' })).toHaveAttribute('href', '/auth')
+  })
+
+  it('링크형 액션에 더 강한 호버 대비 스타일을 사용한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    })
+    render(await Header())
+
+    expect(screen.getByRole('link', { name: '로그인' })).toHaveClass(
+      'hover:bg-slate-200',
+      'hover:shadow-md'
+    )
+    expect(screen.getByRole('link', { name: '회원가입' })).toHaveClass(
+      'hover:bg-slate-800',
+      'hover:shadow-md'
+    )
+  })
+
+  it('링크형 액션에 active와 focus-visible 상태를 적용한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    })
+    render(await Header())
+
+    expect(screen.getByRole('link', { name: '로그인' })).toHaveClass(
+      'active:scale-[0.98]',
+      'focus-visible:ring-2'
+    )
+    expect(screen.getByRole('link', { name: '회원가입' })).toHaveClass(
+      'active:scale-[0.98]',
+      'focus-visible:ring-2'
+    )
   })
 
   it('비회원이면 LogoutButton을 렌더링하지 않는다', async () => {

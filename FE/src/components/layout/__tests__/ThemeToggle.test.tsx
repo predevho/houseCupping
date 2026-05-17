@@ -17,16 +17,16 @@ describe('ThemeToggle', () => {
     jest.clearAllMocks()
   })
 
-  it('초기에는 드롭다운이 닫혀있다', () => {
-    const ThemeToggle = require('../ThemeToggle').default
+  it('초기에는 드롭다운이 닫혀있다', async () => {
+    const { default: ThemeToggle } = await import('../ThemeToggle')
     render(<ThemeToggle />)
     expect(screen.queryByText('라이트')).not.toBeInTheDocument()
     expect(screen.queryByText('다크')).not.toBeInTheDocument()
     expect(screen.queryByText('시스템')).not.toBeInTheDocument()
   })
 
-  it('버튼 클릭 시 드롭다운이 열린다', () => {
-    const ThemeToggle = require('../ThemeToggle').default
+  it('버튼 클릭 시 드롭다운이 열린다', async () => {
+    const { default: ThemeToggle } = await import('../ThemeToggle')
     render(<ThemeToggle />)
     fireEvent.click(screen.getByRole('button', { name: '테마 변경' }))
     expect(screen.getByText('라이트')).toBeInTheDocument()
@@ -34,24 +34,24 @@ describe('ThemeToggle', () => {
     expect(screen.getByText('시스템')).toBeInTheDocument()
   })
 
-  it('다크 클릭 시 setTheme("dark")가 호출된다', () => {
-    const ThemeToggle = require('../ThemeToggle').default
+  it('다크 클릭 시 setTheme("dark")가 호출된다', async () => {
+    const { default: ThemeToggle } = await import('../ThemeToggle')
     render(<ThemeToggle />)
     fireEvent.click(screen.getByRole('button', { name: '테마 변경' }))
     fireEvent.click(screen.getByText('다크'))
     expect(mockSetTheme).toHaveBeenCalledWith('dark')
   })
 
-  it('시스템 클릭 시 setTheme("system")이 호출된다', () => {
-    const ThemeToggle = require('../ThemeToggle').default
+  it('시스템 클릭 시 setTheme("system")이 호출된다', async () => {
+    const { default: ThemeToggle } = await import('../ThemeToggle')
     render(<ThemeToggle />)
     fireEvent.click(screen.getByRole('button', { name: '테마 변경' }))
     fireEvent.click(screen.getByText('시스템'))
     expect(mockSetTheme).toHaveBeenCalledWith('system')
   })
 
-  it('옵션 선택 후 드롭다운이 닫힌다', () => {
-    const ThemeToggle = require('../ThemeToggle').default
+  it('옵션 선택 후 드롭다운이 닫힌다', async () => {
+    const { default: ThemeToggle } = await import('../ThemeToggle')
     render(<ThemeToggle />)
     fireEvent.click(screen.getByRole('button', { name: '테마 변경' }))
     fireEvent.click(screen.getByText('라이트'))

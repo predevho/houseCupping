@@ -54,8 +54,11 @@ export default async function CuppingListPage({ searchParams }: Props) {
   return (
     <main className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold">커핑 노트 목록</h1>
-        <Link href="/beans" className="text-xs text-[#8B2635] font-semibold">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">커핑 노트 목록</h1>
+        <Link
+          href="/beans"
+          className="cursor-pointer rounded-full px-3 py-2 text-xs font-semibold text-[#8B2635] transition-all duration-150 hover:bg-[#8B2635]/10 hover:text-[#6F1D2A] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B2635]/30 active:scale-[0.98] dark:focus-visible:ring-[#A43348]/40"
+        >
           원두 보러가기
         </Link>
       </div>

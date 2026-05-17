@@ -16,7 +16,7 @@ export default function BeanSearch({ q }: Props) {
       />
       <button
         type="submit"
-        className="px-4 py-2 bg-[#8B2635] text-white text-sm rounded"
+        className="cursor-pointer rounded-md bg-[#8B2635] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-[#6F1D2A] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B2635]/30 active:scale-[0.98] dark:hover:bg-[#A43348] dark:focus-visible:ring-[#A43348]/40"
       >
         검색
       </button>

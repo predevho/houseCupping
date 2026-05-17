@@ -26,6 +26,22 @@ describe('CuppingFeedList', () => {
     expect(screen.getByText('복숭아 향과 말린 자두 느낌')).toBeInTheDocument()
   })
 
+  it('각 노트의 향미, 산미, 바디를 원형 점수로 표시한다', () => {
+    render(<CuppingFeedList notes={notes} emptyMessage="없음" />)
+
+    expect(screen.getByLabelText('향미 4점')).toBeInTheDocument()
+    expect(screen.getByLabelText('산미 3.5점')).toBeInTheDocument()
+    expect(screen.getByLabelText('바디 3점')).toBeInTheDocument()
+  })
+
+  it('커핑 피드의 점수 행은 한 줄 유지용 압축 레이아웃을 사용한다', () => {
+    render(<CuppingFeedList notes={notes} emptyMessage="없음" />)
+
+    expect(screen.getByLabelText('향미 4점')).toHaveClass('shrink-0', 'gap-1')
+    expect(screen.getByLabelText('산미 3.5점')).toHaveClass('shrink-0', 'gap-1')
+    expect(screen.getByLabelText('바디 3점')).toHaveClass('shrink-0', 'gap-1')
+  })
+
   it('카드 전체가 상세 페이지 링크다', () => {
     render(<CuppingFeedList notes={notes} emptyMessage="없음" />)
 
@@ -54,5 +70,18 @@ describe('CuppingFeedList', () => {
 
     expect(screen.getByText(/♥ 0/)).toBeInTheDocument()
     expect(screen.getByText(/💬 0/)).toBeInTheDocument()
+  })
+
+  it('다크모드 대비용 카드/텍스트 클래스를 사용한다', () => {
+    render(<CuppingFeedList notes={notes} emptyMessage="없음" />)
+
+    expect(screen.getByRole('link', { name: /예가체프 - 블루보틀/i })).toHaveClass(
+      'dark:bg-gray-900',
+      'dark:border-gray-800',
+      'active:scale-[0.99]',
+      'focus-visible:ring-2'
+    )
+    expect(screen.getByText('복숭아 향과 말린 자두 느낌')).toHaveClass('dark:text-gray-300')
+    expect(screen.getByText(/♥ 3/)).toHaveClass('dark:text-gray-500')
   })
 })

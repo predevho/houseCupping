@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import CircleRatingDisplay from './CircleRatingDisplay'
 
 export interface CuppingFeedItem {
   id: number
@@ -33,7 +34,7 @@ export default function CuppingFeedList({ notes, emptyMessage }: Props) {
           <li key={note.id}>
             <Link
               href={`/cupping/${note.id}`}
-              className="flex flex-col gap-2 rounded-lg border border-gray-100 px-4 py-3 transition-colors hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-600"
+              className="flex cursor-pointer flex-col gap-2 rounded-lg border border-gray-100 bg-white px-4 py-3 transition-all duration-150 hover:border-[#8B2635]/30 hover:bg-[#8B2635]/[0.06] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B2635]/20 active:scale-[0.99] dark:border-gray-800 dark:bg-gray-900 dark:hover:border-[#A43348]/50 dark:hover:bg-[#A43348]/10 dark:focus-visible:ring-[#A43348]/30"
             >
               <div>
                 <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -45,13 +46,31 @@ export default function CuppingFeedList({ notes, emptyMessage }: Props) {
                   <span>{new Date(note.created_at).toLocaleDateString('ko-KR')}</span>
                 </p>
               </div>
-              <div className="flex gap-4 text-sm">
-                <span>향미 {note.aroma}</span>
-                <span>산미 {note.acidity}</span>
-                <span>바디 {note.body}</span>
+              <div className="flex items-center justify-between gap-2 overflow-hidden">
+                <CircleRatingDisplay
+                  label="향미"
+                  value={note.aroma}
+                  className="shrink-0 gap-1"
+                  labelClassName="text-[11px]"
+                  sizeClassName="h-3.5 w-3.5"
+                />
+                <CircleRatingDisplay
+                  label="산미"
+                  value={note.acidity}
+                  className="shrink-0 gap-1"
+                  labelClassName="text-[11px]"
+                  sizeClassName="h-3.5 w-3.5"
+                />
+                <CircleRatingDisplay
+                  label="바디"
+                  value={note.body}
+                  className="shrink-0 gap-1"
+                  labelClassName="text-[11px]"
+                  sizeClassName="h-3.5 w-3.5"
+                />
               </div>
               {note.roast_date && <p className="text-xs text-gray-400 dark:text-gray-500">로스팅일 {note.roast_date}</p>}
-              {note.memo && <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{note.memo}</p>}
+              {note.memo && <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">{note.memo}</p>}
               <p className="text-xs text-gray-400 dark:text-gray-500">♥ {likeCount}  💬 {commentCount}</p>
             </Link>
           </li>

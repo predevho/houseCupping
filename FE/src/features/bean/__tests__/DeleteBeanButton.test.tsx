@@ -22,7 +22,13 @@ describe('DeleteBeanButton', () => {
 
   it('삭제 버튼이 렌더링된다', () => {
     render(<DeleteBeanButton beanId="12" />)
-    expect(screen.getByRole('button', { name: '삭제' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '삭제' })).toHaveClass(
+      'h-10',
+      'px-4',
+      'border',
+      'rounded-md',
+      'text-sm'
+    )
   })
 
   it('버튼 클릭 시 deleteBeanAction을 호출한다', () => {

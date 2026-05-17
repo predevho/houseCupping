@@ -21,7 +21,7 @@ export default function AppError({ error, reset }: Props) {
       <button
         type="button"
         onClick={reset}
-        className="mt-2 px-4 py-2 bg-[#8B2635] text-white text-sm rounded"
+        className="mt-2 rounded-md bg-[#8B2635] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-[#6F1D2A] hover:shadow-md dark:hover:bg-[#A43348]"
       >
         다시 시도
       </button>

@@ -1,8 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import AppLayout from '../layout'
 
-jest.mock('@/components/layout/Header', () => () => <div data-testid="top-nav" />)
-jest.mock('@/components/layout/SideNav', () => () => <div data-testid="side-nav" />)
+jest.mock('@/components/layout/Header', () => function MockHeader() {
+  return <div data-testid="top-nav" />
+})
+jest.mock('@/components/layout/SideNav', () => function MockSideNav() {
+  return <div data-testid="side-nav" />
+})
 
 describe('AppLayout', () => {
   it('top nav, side nav, content를 함께 렌더링한다', () => {

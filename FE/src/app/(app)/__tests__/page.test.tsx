@@ -46,6 +46,21 @@ describe('HomePage', () => {
     expect(screen.getByRole('heading', { name: '최신 커핑 피드' })).toBeInTheDocument()
     expect(screen.getByText('예가체프 - 블루보틀')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: '필터해서 보기' })).toHaveAttribute('href', '/cupping')
+    expect(screen.getByRole('link', { name: '필터해서 보기' })).toHaveClass(
+      'hover:text-[#6F1D2A]',
+      'hover:bg-[#8B2635]/10'
+    )
+  })
+
+  it('다크모드 대응 텍스트 클래스를 사용한다', async () => {
+    mockFeedQuery({ data: [] })
+
+    render(await HomePage())
+
+    expect(screen.getByRole('heading', { name: '최신 커핑 피드' })).toHaveClass('dark:text-gray-100')
+    expect(
+      screen.getByText('회원이 아니어도 최근 기록을 둘러보고, 마음에 드는 노트는 상세 페이지에서 이어서 볼 수 있어요.')
+    ).toHaveClass('dark:text-gray-300')
   })
 
   it('노트가 없으면 빈 상태 문구를 보여준다', async () => {

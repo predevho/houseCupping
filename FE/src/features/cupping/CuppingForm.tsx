@@ -1,11 +1,12 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import FieldError from '@/components/ui/FieldError'
 import FormSubmitButton from '@/components/ui/FormSubmitButton'
 import { type CuppingFormState } from './actions'
+import CircleRatingInput from './CircleRatingInput'
 
-const SCORE_OPTIONS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+const TODAY = new Date().toISOString().slice(0, 10)
 
 interface CuppingFormInitialValues {
   aroma: number
@@ -37,6 +38,10 @@ export default function CuppingForm({
     action,
     null
   )
+  const [aroma, setAroma] = useState<number | null>(initialValues?.aroma ?? null)
+  const [acidity, setAcidity] = useState<number | null>(initialValues?.acidity ?? null)
+  const [body, setBody] = useState<number | null>(initialValues?.body ?? null)
+  const [score, setScore] = useState<number | null>(initialValues?.score ?? null)
 
   return (
     <form action={formAction} className="flex flex-col gap-3">
@@ -46,60 +51,46 @@ export default function CuppingForm({
       <p className="text-sm text-gray-500 dark:text-gray-400">{beanLabel}</p>
 
       <div>
-        <label htmlFor="aroma" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-          향미 (Aroma) <span className="text-red-500">*</span>
-        </label>
-        <select
-          id="aroma"
+        <CircleRatingInput
           name="aroma"
+          label="향미 (Aroma)"
+          value={aroma}
           required
-          defaultValue={initialValues?.aroma?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-        >
-          <option value="" disabled>선택</option>
-          {SCORE_OPTIONS.map((v) => (
-            <option key={v} value={v}>{v}</option>
-          ))}
-        </select>
+          onChange={setAroma}
+        />
         <FieldError message={state?.errors?.aroma} />
       </div>
 
       <div>
-        <label htmlFor="acidity" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-          산미 (Acidity) <span className="text-red-500">*</span>
-        </label>
-        <select
-          id="acidity"
+        <CircleRatingInput
           name="acidity"
+          label="산미 (Acidity)"
+          value={acidity}
           required
-          defaultValue={initialValues?.acidity?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-        >
-          <option value="" disabled>선택</option>
-          {SCORE_OPTIONS.map((v) => (
-            <option key={v} value={v}>{v}</option>
-          ))}
-        </select>
+          onChange={setAcidity}
+        />
         <FieldError message={state?.errors?.acidity} />
       </div>
 
       <div>
-        <label htmlFor="body" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-          바디 (Body) <span className="text-red-500">*</span>
-        </label>
-        <select
-          id="body"
+        <CircleRatingInput
           name="body"
+          label="바디 (Body)"
+          value={body}
           required
-          defaultValue={initialValues?.body?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-        >
-          <option value="" disabled>선택</option>
-          {SCORE_OPTIONS.map((v) => (
-            <option key={v} value={v}>{v}</option>
-          ))}
-        </select>
+          onChange={setBody}
+        />
         <FieldError message={state?.errors?.body} />
+      </div>
+
+      <div>
+        <CircleRatingInput
+          name="score"
+          label="종합 평점"
+          value={score}
+          onChange={setScore}
+        />
+        <FieldError message={state?.errors?.score} />
       </div>
 
       <div>
@@ -110,6 +101,7 @@ export default function CuppingForm({
           id="roast_date"
           name="roast_date"
           type="date"
+          max={TODAY}
           defaultValue={initialValues?.roast_date ?? ''}
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         />
@@ -126,24 +118,6 @@ export default function CuppingForm({
           defaultValue={initialValues?.memo ?? ''}
           className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none resize-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         />
-      </div>
-
-      <div>
-        <label htmlFor="score" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-          종합 평점
-        </label>
-        <select
-          id="score"
-          name="score"
-          defaultValue={initialValues?.score?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-        >
-          <option value="">선택 안 함</option>
-          {SCORE_OPTIONS.map((v) => (
-            <option key={v} value={v}>{v}</option>
-          ))}
-        </select>
-        <FieldError message={state?.errors?.score} />
       </div>
 
       <FieldError message={state?.errors?.general} />

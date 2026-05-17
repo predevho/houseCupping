@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { buildRatingSummary } from '@/features/bean/ratingSummary'
 import DeleteBeanButton from '@/features/bean/DeleteBeanButton'
+import CircleRatingDisplay from '@/features/cupping/CircleRatingDisplay'
 
 interface BeanDetail {
   id: number
@@ -36,24 +37,52 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
+function isMissingImagePathColumn(error: { code?: string; message?: string } | null) {
+  return error?.code === 'PGRST204' || error?.message?.includes('image_path')
+}
+
 export default async function BeanDetailPage({ params }: Props) {
   const { id } = await params
   const beanId = Number(id)
   if (!beanId) notFound()
   const supabase = await createClient()
 
-  const [{ data }, { data: authData }] = await Promise.all([
+  const [beanResult, authResult] = await Promise.all([
     supabase
-    .from('beans')
-    .select('id, user_id, cafe_name, bean_name, origin, process, roast_level, image_path, created_at, profiles(username)')
-    .eq('id', beanId)
-    .maybeSingle(),
+      .from('beans')
+      .select('id, user_id, cafe_name, bean_name, origin, process, roast_level, image_path, created_at, profiles(username)')
+      .eq('id', beanId)
+      .maybeSingle(),
     supabase.auth.getUser(),
   ])
+  let beanData = beanResult.data as BeanDetail | null
+  let beanError = beanResult.error
+  const { data: authData } = authResult
 
-  if (!data) notFound()
+  if (isMissingImagePathColumn(beanError)) {
+    const fallbackResult = await supabase
+      .from('beans')
+      .select('id, user_id, cafe_name, bean_name, origin, process, roast_level, created_at, profiles(username)')
+      .eq('id', beanId)
+      .maybeSingle()
 
-  const bean = data as unknown as BeanDetail
+    beanError = fallbackResult.error
+    beanData = fallbackResult.data
+      ? {
+        ...(fallbackResult.data as Omit<BeanDetail, 'image_path'>),
+        image_path: null,
+      }
+      : null
+  }
+
+  if (beanError) {
+    console.error('bean detail query error:', beanError)
+    throw new Error('원두 상세를 불러오는 데 실패했어요')
+  }
+
+  if (!beanData) notFound()
+
+  const bean = beanData
 
   const { data: notesData, error: notesError } = await supabase
     .from('cupping_notes')
@@ -85,6 +114,7 @@ export default async function BeanDetailPage({ params }: Props) {
   return (
     <main className="max-w-md mx-auto px-4 py-8 flex flex-col gap-4">
       {bean.image_path && (
+        /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={supabase.storage.from('beans').getPublicUrl(bean.image_path).data.publicUrl}
           alt={`${bean.bean_name} 대표 이미지`}
@@ -94,31 +124,31 @@ export default async function BeanDetailPage({ params }: Props) {
 
       <div>
         <p className="text-lg font-bold">{bean.bean_name}</p>
-        <p className="text-gray-500 text-sm">{bean.cafe_name}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{bean.cafe_name}</p>
       </div>
 
       <dl className="flex flex-col gap-2 text-sm">
         {bean.origin && (
           <div className="flex gap-2">
-            <dt className="text-gray-400 w-20 shrink-0">원산지</dt>
+            <dt className="w-20 shrink-0 text-gray-400 dark:text-gray-500">원산지</dt>
             <dd>{bean.origin}</dd>
           </div>
         )}
         {bean.process && (
           <div className="flex gap-2">
-            <dt className="text-gray-400 w-20 shrink-0">가공</dt>
+            <dt className="w-20 shrink-0 text-gray-400 dark:text-gray-500">가공</dt>
             <dd>{bean.process}</dd>
           </div>
         )}
         {bean.roast_level && (
           <div className="flex gap-2">
-            <dt className="text-gray-400 w-20 shrink-0">로스팅</dt>
+            <dt className="w-20 shrink-0 text-gray-400 dark:text-gray-500">로스팅</dt>
             <dd>{bean.roast_level}</dd>
           </div>
         )}
       </dl>
 
-      <div className="text-xs text-gray-400 pt-2 border-t border-gray-100">
+      <div className="border-t border-gray-100 pt-2 text-xs text-gray-400 dark:border-gray-800 dark:text-gray-500">
         <p>등록자 @{registeredBy}</p>
         <p>등록일 {registeredAt}</p>
       </div>
@@ -126,7 +156,10 @@ export default async function BeanDetailPage({ params }: Props) {
       {(isOwner || isAdmin) && (
         <div className="flex items-center gap-3">
           {isOwner && (
-            <Link href={`/beans/${bean.id}/edit`} className="text-xs text-gray-500 font-semibold">
+            <Link
+              href={`/beans/${bean.id}/edit`}
+              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition-all duration-150 hover:border-[#8B2635]/30 hover:bg-[#8B2635]/[0.06] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B2635]/20 active:scale-[0.98] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-[#A43348]/50 dark:hover:bg-[#A43348]/10 dark:focus-visible:ring-[#A43348]/30"
+            >
               수정
             </Link>
           )}
@@ -134,14 +167,14 @@ export default async function BeanDetailPage({ params }: Props) {
         </div>
       )}
 
-      <div className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3">
-        <p className="text-xs font-semibold text-gray-500">종합 평점</p>
+      <div className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">종합 평점</p>
         {ratingSummary ? (
-          <p className="mt-1 text-sm text-gray-700">
+          <p className="mt-1 text-sm text-gray-700 dark:text-gray-200">
             평균 {ratingSummary.average} / 5.0 · {ratingSummary.count}명 참여
           </p>
         ) : (
-          <p className="mt-1 text-sm text-gray-400">아직 등록된 종합 평점이 없어요</p>
+          <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">아직 등록된 종합 평점이 없어요</p>
         )}
       </div>
 
@@ -161,18 +194,18 @@ export default async function BeanDetailPage({ params }: Props) {
             {notes.map((note) => (
               <li
                 key={note.id}
-                className="flex flex-col gap-1 text-sm border-t border-gray-100 pt-4"
+                className="flex flex-col gap-1 border-t border-gray-100 pt-4 text-sm dark:border-gray-800"
               >
-                <div className="flex gap-4 text-sm">
-                  <span>향미 {note.aroma}</span>
-                  <span>산미 {note.acidity}</span>
-                  <span>바디 {note.body}</span>
+                <div className="flex flex-wrap gap-3">
+                  <CircleRatingDisplay label="향미" value={note.aroma} />
+                  <CircleRatingDisplay label="산미" value={note.acidity} />
+                  <CircleRatingDisplay label="바디" value={note.body} />
                 </div>
                 {note.roast_date && (
-                  <p className="text-xs text-gray-400">로스팅일 {note.roast_date}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">로스팅일 {note.roast_date}</p>
                 )}
-                {note.memo && <p className="text-gray-600 text-sm">{note.memo}</p>}
-                <p className="text-xs text-gray-400">
+                {note.memo && <p className="text-sm text-gray-600 dark:text-gray-300">{note.memo}</p>}
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   @{note.profiles?.username ?? '알 수 없음'} ·{' '}
                   {new Date(note.created_at).toLocaleDateString('ko-KR')}
                 </p>
@@ -180,7 +213,7 @@ export default async function BeanDetailPage({ params }: Props) {
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-gray-400">아직 커핑 노트가 없어요</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">아직 커핑 노트가 없어요</p>
         )}
       </div>
     </main>

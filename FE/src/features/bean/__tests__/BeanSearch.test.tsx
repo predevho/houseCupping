@@ -18,4 +18,23 @@ describe('BeanSearch', () => {
     expect(form).toHaveAttribute('method', 'GET')
     expect(form).toHaveAttribute('action', '/beans')
   })
+
+  it('검색 버튼에 공통 강조 호버 스타일을 적용한다', () => {
+    render(<BeanSearch />)
+
+    expect(screen.getByRole('button', { name: '검색' })).toHaveClass(
+      'hover:bg-[#6F1D2A]',
+      'hover:shadow-md',
+      'transition-all'
+    )
+  })
+
+  it('검색 버튼에 active와 focus-visible 상태를 적용한다', () => {
+    render(<BeanSearch />)
+
+    expect(screen.getByRole('button', { name: '검색' })).toHaveClass(
+      'active:scale-[0.98]',
+      'focus-visible:ring-2'
+    )
+  })
 })

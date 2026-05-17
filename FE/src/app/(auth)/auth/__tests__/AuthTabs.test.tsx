@@ -1,12 +1,12 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import AuthTabs from '../AuthTabs'
 
-jest.mock('../LoginForm', () => ({ next }: { next?: string }) => (
-  <div data-testid="login-form">{next ?? 'no-next'}</div>
-))
-jest.mock('../SignupForm', () => ({ next }: { next?: string }) => (
-  <div data-testid="signup-form">{next ?? 'no-next'}</div>
-))
+jest.mock('../LoginForm', () => function MockLoginForm({ next }: { next?: string }) {
+  return <div data-testid="login-form">{next ?? 'no-next'}</div>
+})
+jest.mock('../SignupForm', () => function MockSignupForm({ next }: { next?: string }) {
+  return <div data-testid="signup-form">{next ?? 'no-next'}</div>
+})
 
 describe('AuthTabs', () => {
   it('초기 상태에서 로그인 폼을 표시한다', () => {

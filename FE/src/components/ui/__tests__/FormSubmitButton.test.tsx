@@ -32,4 +32,18 @@ describe('FormSubmitButton', () => {
     fireEvent.click(screen.getByRole('button'))
     expect(onClick).toHaveBeenCalledTimes(1)
   })
+
+  it('호버 시 색 변화가 분명한 강조 스타일을 사용한다', () => {
+    render(
+      <FormSubmitButton isPending={false} pendingLabel="저장 중...">
+        저장
+      </FormSubmitButton>
+    )
+
+    expect(screen.getByRole('button', { name: '저장' })).toHaveClass(
+      'hover:bg-[#6F1D2A]',
+      'hover:shadow-md',
+      'transition-all'
+    )
+  })
 })

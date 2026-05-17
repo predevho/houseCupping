@@ -13,7 +13,10 @@ jest.mock('@/components/ui/toast', () => ({
 }))
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
-  useActionState: (_action: unknown, initialState: unknown) => [initialState, jest.fn(), false],
+  useActionState: (action: unknown, initialState: unknown) => {
+    void action
+    return [initialState, jest.fn(), false]
+  },
 }))
 
 beforeEach(() => jest.clearAllMocks())
@@ -34,15 +37,21 @@ describe('CommentForm', () => {
   })
 
   it('에러 상태가 있으면 에러 메시지를 표시한다', () => {
-    jest.requireMock('react').useActionState = (_: unknown, __: unknown) =>
-      [{ error: '댓글을 입력해주세요' }, jest.fn(), false]
+    jest.requireMock('react').useActionState = (action: unknown, initialState: unknown) => {
+      void action
+      void initialState
+      return [{ error: '댓글을 입력해주세요' }, jest.fn(), false]
+    }
     render(<CommentForm noteId="note-1" userId="user-1" />)
     expect(screen.getByText('댓글을 입력해주세요')).toBeInTheDocument()
   })
 
   it('isPending 상태에서 버튼이 비활성화된다', () => {
-    jest.requireMock('react').useActionState = (_: unknown, __: unknown) =>
-      [null, jest.fn(), true]
+    jest.requireMock('react').useActionState = (action: unknown, initialState: unknown) => {
+      void action
+      void initialState
+      return [null, jest.fn(), true]
+    }
     render(<CommentForm noteId="note-1" userId="user-1" />)
     expect(screen.getByRole('button', { name: '등록 중...' })).toBeDisabled()
   })

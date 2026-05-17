@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import DeleteButton from '@/features/cupping/DeleteButton'
+import CircleRatingDisplay from '@/features/cupping/CircleRatingDisplay'
 import LikeButton from '@/features/social/LikeButton'
 import CommentForm from '@/features/social/CommentForm'
 import DeleteCommentButton from '@/features/social/DeleteCommentButton'
@@ -99,27 +100,27 @@ export default async function CuppingDetailPage({ params }: Props) {
             {beanLabel} →
           </Link>
         ) : (
-          <p className="text-sm text-gray-400">{beanLabel}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">{beanLabel}</p>
         )}
       </div>
 
-      <div className="flex gap-4 text-sm">
-        <span>향미 {note.aroma}</span>
-        <span>산미 {note.acidity}</span>
-        <span>바디 {note.body}</span>
+      <div className="flex flex-wrap gap-3">
+        <CircleRatingDisplay label="향미" value={note.aroma} />
+        <CircleRatingDisplay label="산미" value={note.acidity} />
+        <CircleRatingDisplay label="바디" value={note.body} />
       </div>
 
       {ratingData?.score != null && (
-        <p className="text-sm text-gray-500">작성자 종합 평점 {ratingData.score}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">작성자 종합 평점 {ratingData.score}</p>
       )}
 
       {note.roast_date && (
-        <p className="text-sm text-gray-500">로스팅일 {note.roast_date}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">로스팅일 {note.roast_date}</p>
       )}
 
-      {note.memo && <p className="text-sm text-gray-700">{note.memo}</p>}
+      {note.memo && <p className="text-sm text-gray-700 dark:text-gray-200">{note.memo}</p>}
 
-      <div className="text-xs text-gray-400 flex items-center gap-1">
+      <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
         {note.profiles?.username ? (
           <Link href={`/profile/${note.profiles.username}`}>
             @{note.profiles.username}
@@ -135,7 +136,7 @@ export default async function CuppingDetailPage({ params }: Props) {
         <div className="flex items-center gap-3">
           <Link
             href={`/cupping/${note.id}/edit`}
-            className="text-xs text-gray-500 font-semibold"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition-all duration-150 hover:border-[#8B2635]/30 hover:bg-[#8B2635]/[0.06] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B2635]/20 active:scale-[0.98] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-[#A43348]/50 dark:hover:bg-[#A43348]/10 dark:focus-visible:ring-[#A43348]/30"
           >
             수정
           </Link>
@@ -144,7 +145,7 @@ export default async function CuppingDetailPage({ params }: Props) {
       )}
 
       {/* 좋아요 */}
-      <div className="mt-6 border-t border-gray-100 pt-4">
+      <div className="mt-6 border-t border-gray-100 pt-4 dark:border-gray-800">
         <LikeButton
           noteId={String(note.id)}
           userId={authData.user?.id ?? null}
@@ -154,21 +155,21 @@ export default async function CuppingDetailPage({ params }: Props) {
       </div>
 
       {/* 댓글 */}
-      <section className="mt-6 border-t border-gray-100 pt-4 flex flex-col gap-4">
-        <h2 className="text-sm font-semibold text-gray-700">댓글 {comments.length}개</h2>
+      <section className="mt-6 flex flex-col gap-4 border-t border-gray-100 pt-4 dark:border-gray-800">
+        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">댓글 {comments.length}개</h2>
         <ul className="flex flex-col gap-3">
           {comments.map((comment) => (
             <li key={comment.id} className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-gray-700">
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
                   {comment.profiles?.display_name ?? comment.profiles?.username ?? '알 수 없음'}
                 </span>
                 {comment.user_id === authData.user?.id && (
                   <DeleteCommentButton commentId={String(comment.id)} noteId={String(note.id)} />
                 )}
               </div>
-              <p className="text-sm text-gray-800">{comment.content}</p>
-              <span className="text-xs text-gray-400">
+              <p className="text-sm text-gray-800 dark:text-gray-100">{comment.content}</p>
+              <span className="text-xs text-gray-400 dark:text-gray-500">
                 {new Date(comment.created_at).toLocaleDateString('ko-KR')}
               </span>
             </li>

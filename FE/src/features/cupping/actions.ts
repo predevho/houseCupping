@@ -17,6 +17,26 @@ function isValidScore(v: number): boolean {
   return v >= 0.5 && v <= 5.0 && Number.isInteger(v * 2)
 }
 
+function isValidRoastDate(value: string | null): boolean {
+  if (value === null) return true
+
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (!match) return false
+
+  const [, yearRaw, monthRaw, dayRaw] = match
+  const year = Number(yearRaw)
+  const month = Number(monthRaw)
+  const day = Number(dayRaw)
+
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  )
+}
+
 export async function createCuppingAction(
   _state: CuppingFormState,
   formData: FormData
@@ -53,6 +73,9 @@ export async function createCuppingAction(
   }
   if (score !== null && !isValidScore(score)) {
     return { errors: { score: '평점은 0.5~5.0 사이로 입력해주세요' } }
+  }
+  if (!isValidRoastDate(roast_date)) {
+    return { errors: { general: '로스팅 날짜를 다시 확인해주세요' } }
   }
 
   const supabase = await createClient()
@@ -136,6 +159,7 @@ export async function updateCuppingAction(
   if (!isValidScore(acidity)) return { errors: { acidity: '산미는 0.5~5.0 사이로 입력해주세요' } }
   if (!isValidScore(body)) return { errors: { body: '바디는 0.5~5.0 사이로 입력해주세요' } }
   if (score !== null && !isValidScore(score)) return { errors: { score: '평점은 0.5~5.0 사이로 입력해주세요' } }
+  if (!isValidRoastDate(roast_date)) return { errors: { general: '로스팅 날짜를 다시 확인해주세요' } }
 
   const supabase = await createClient()
   const {

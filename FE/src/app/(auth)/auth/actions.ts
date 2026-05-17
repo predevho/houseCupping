@@ -13,6 +13,14 @@ export type SignupState = {
   }
 } | null
 
+function buildVerifyEmailPath(next: string): string {
+  if (next === '/') {
+    return '/auth/verify-email'
+  }
+
+  return `/auth/verify-email?next=${encodeURIComponent(next)}`
+}
+
 function sanitizeNextPath(value: FormDataEntryValue | null): string {
   if (typeof value !== 'string') return '/'
 
@@ -88,7 +96,7 @@ export async function signupAction(
     return { errors: { username: '이미 사용 중인 아이디입니다' } }
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { username, display_name } },
@@ -99,6 +107,10 @@ export async function signupAction(
       return { errors: { email: '이미 가입된 이메일입니다' } }
     }
     return { errors: { general: '잠시 후 다시 시도해주세요' } }
+  }
+
+  if (!data.session) {
+    redirect(buildVerifyEmailPath(next))
   }
 
   redirect(next)

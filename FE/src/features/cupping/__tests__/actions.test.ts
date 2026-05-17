@@ -56,6 +56,20 @@ describe('createCuppingAction', () => {
     expect(result).toEqual({ errors: { score: '평점은 0.5~5.0 사이로 입력해주세요' } })
   })
 
+  it('존재하지 않는 로스팅 날짜면 에러를 반환한다', async () => {
+    mockCreateClient.mockResolvedValue({})
+    const fd = makeFormData({ ...validBase, roast_date: '2025-04-31' })
+    const result = await createCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { general: '로스팅 날짜를 다시 확인해주세요' } })
+  })
+
+  it('연도가 4자리가 아닌 로스팅 날짜면 에러를 반환한다', async () => {
+    mockCreateClient.mockResolvedValue({})
+    const fd = makeFormData({ ...validBase, roast_date: '202025-02-20' })
+    const result = await createCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { general: '로스팅 날짜를 다시 확인해주세요' } })
+  })
+
   it('성공 시 cupping_notes insert 후 redirect를 호출한다', async () => {
     const mockFrom = jest.fn().mockImplementation((table: string) => {
       if (table === 'cupping_notes')
@@ -184,6 +198,13 @@ describe('updateCuppingAction', () => {
     const fd = makeFormData({ note_id: '1', aroma: '6.0', acidity: '3.5', body: '3.0' })
     const result = await updateCuppingAction(null, fd)
     expect(result).toEqual({ errors: { aroma: '향미는 0.5~5.0 사이로 입력해주세요' } })
+  })
+
+  it('수정 시 존재하지 않는 로스팅 날짜면 에러를 반환한다', async () => {
+    mockCreateClient.mockResolvedValue({})
+    const fd = makeFormData({ note_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0', roast_date: '2025-02-31' })
+    const result = await updateCuppingAction(null, fd)
+    expect(result).toEqual({ errors: { general: '로스팅 날짜를 다시 확인해주세요' } })
   })
 
   it('비로그인 시 general 에러를 반환한다', async () => {

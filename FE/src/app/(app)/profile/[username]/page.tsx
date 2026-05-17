@@ -27,8 +27,8 @@ export default async function UserProfilePage({ params }: Props) {
     <main className="max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
       <div className="flex flex-col gap-1">
         <p className="text-lg font-bold">@{profile.username}</p>
-        <p className="text-gray-600">{profile.display_name}</p>
-        <p className="text-xs text-gray-400">가입일 {joinedAt}</p>
+        <p className="text-gray-600 dark:text-gray-300">{profile.display_name}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500">가입일 {joinedAt}</p>
       </div>
     </main>
   )

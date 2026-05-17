@@ -134,6 +134,22 @@ describe('signupAction', () => {
     expect(mockRedirect).toHaveBeenCalledWith('/')
   })
 
+  it('회원가입 후 세션이 없으면 이메일 확인 안내 페이지로 redirect한다', async () => {
+    mockCreateClient.mockResolvedValue({
+      from: () => ({ select: () => ({ eq: () => ({ single: () => ({ data: null }) }) }) }),
+      auth: { signUp: jest.fn().mockResolvedValue({ data: { user: { id: 'new-uuid' }, session: null }, error: null }) },
+    })
+
+    const fd = new FormData()
+    fd.set('username', 'newuser1')
+    fd.set('display_name', '닉네임테스트')
+    fd.set('email', 'new@example.com')
+    fd.set('password', 'pw123456')
+
+    await signupAction(null, fd)
+    expect(mockRedirect).toHaveBeenCalledWith('/auth/verify-email')
+  })
+
   it('유효한 next가 있으면 회원가입 후 해당 경로로 redirect한다', async () => {
     mockCreateClient.mockResolvedValue({
       from: () => ({ select: () => ({ eq: () => ({ single: () => ({ data: null }) }) }) }),

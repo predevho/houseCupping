@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import CuppingForm from '../CuppingForm'
 
 jest.mock('react', () => ({
@@ -24,16 +24,26 @@ describe('CuppingForm', () => {
 
   it('필수 필드(향미, 산미, 바디)가 렌더링된다', () => {
     render(<CuppingForm {...defaultProps} />)
-    expect(screen.getByLabelText(/향미/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/산미/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/바디/)).toBeInTheDocument()
+    expect(screen.getByText(/향미 \(Aroma\)/)).toBeInTheDocument()
+    expect(screen.getByText(/산미 \(Acidity\)/)).toBeInTheDocument()
+    expect(screen.getByText(/바디 \(Body\)/)).toBeInTheDocument()
   })
 
   it('선택 필드(로스팅 날짜, 메모, 종합 평점)가 렌더링된다', () => {
     render(<CuppingForm {...defaultProps} />)
     expect(screen.getByLabelText(/로스팅 날짜/)).toBeInTheDocument()
     expect(screen.getByLabelText(/메모/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/종합 평점/)).toBeInTheDocument()
+    expect(screen.getByText(/종합 평점/)).toBeInTheDocument()
+  })
+
+  it('로스팅 날짜 입력에 오늘 날짜 max 제약을 건다', () => {
+    render(<CuppingForm {...defaultProps} />)
+
+    const roastDateInput = screen.getByLabelText(/로스팅 날짜/) as HTMLInputElement
+
+    expect(roastDateInput).toHaveAttribute('type', 'date')
+    expect(roastDateInput).toHaveAttribute('max')
+    expect(roastDateInput.getAttribute('max')).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 
   it('submitLabel이 버튼에 렌더링된다', () => {
@@ -72,11 +82,56 @@ describe('CuppingForm', () => {
       score: 4.5,
     }
     render(<CuppingForm {...defaultProps} noteId="note-1" initialValues={initialValues} />)
-    const aromaSelect = screen.getByLabelText(/향미/) as HTMLSelectElement
-    expect(aromaSelect.value).toBe('4')
-    const aciditySelect = screen.getByLabelText(/산미/) as HTMLSelectElement
-    expect(aciditySelect.value).toBe('3.5')
-    const bodySelect = screen.getByLabelText(/바디/) as HTMLSelectElement
-    expect(bodySelect.value).toBe('3')
+    const aromaInput = screen.getByDisplayValue('4') as HTMLInputElement
+    const acidityInput = screen.getByDisplayValue('3.5') as HTMLInputElement
+    const bodyInput = screen.getByDisplayValue('3') as HTMLInputElement
+
+    expect(aromaInput).toHaveAttribute('name', 'aroma')
+    expect(acidityInput).toHaveAttribute('name', 'acidity')
+    expect(bodyInput).toHaveAttribute('name', 'body')
+  })
+
+  it('원형 점수 버튼을 클릭하면 hidden input 값이 갱신된다', () => {
+    render(<CuppingForm {...defaultProps} />)
+
+    fireEvent.click(screen.getByRole('button', { name: '향미 3.5점 선택' }))
+
+    expect(screen.getByDisplayValue('3.5')).toHaveAttribute('name', 'aroma')
+  })
+
+  it('드래그로도 원형 점수 값을 0.5 단위로 변경할 수 있다', () => {
+    render(<CuppingForm {...defaultProps} />)
+
+    const dragArea = screen.getByLabelText('향미 점수 선택 영역')
+
+    Object.defineProperty(dragArea, 'getBoundingClientRect', {
+      value: () => ({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 28,
+        right: 200,
+        bottom: 28,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }),
+    })
+
+    fireEvent.mouseDown(dragArea, { clientX: 140, buttons: 1 })
+    fireEvent.mouseMove(dragArea, { clientX: 140, buttons: 1 })
+    fireEvent.mouseUp(dragArea)
+
+    expect(screen.getByDisplayValue('3.5')).toHaveAttribute('name', 'aroma')
+  })
+
+  it('종합 평점이 바디 아래에 같은 원형 UI로 렌더링된다', () => {
+    render(<CuppingForm {...defaultProps} />)
+
+    const bodyLabel = screen.getByText(/바디 \(Body\)/)
+    const scoreLabel = screen.getByText(/종합 평점/)
+
+    expect(bodyLabel.compareDocumentPosition(scoreLabel)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    expect(screen.getByLabelText('종합 평점 점수 선택 영역')).toBeInTheDocument()
   })
 })
