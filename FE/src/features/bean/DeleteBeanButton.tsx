@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import DeleteActionButton from '@/components/ui/DeleteActionButton'
 import { deleteBeanAction } from './actions'
 
 interface Props {
@@ -8,16 +8,5 @@ interface Props {
 }
 
 export default function DeleteBeanButton({ beanId }: Props) {
-  const [isPending, startTransition] = useTransition()
-
-  return (
-    <button
-      type="button"
-      disabled={isPending}
-      onClick={() => startTransition(() => deleteBeanAction(beanId))}
-      className="text-xs text-red-500 font-semibold"
-    >
-      {isPending ? '삭제 중...' : '삭제'}
-    </button>
-  )
+  return <DeleteActionButton onDelete={() => deleteBeanAction(beanId)} />
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import DeleteActionButton from '@/components/ui/DeleteActionButton'
 import { deleteCommentAction } from './actions'
 
 interface Props {
@@ -9,16 +9,5 @@ interface Props {
 }
 
 export default function DeleteCommentButton({ commentId, noteId }: Props) {
-  const [isPending, startTransition] = useTransition()
-
-  return (
-    <button
-      type="button"
-      disabled={isPending}
-      onClick={() => startTransition(() => deleteCommentAction(commentId, noteId))}
-      className="text-xs text-red-500 font-semibold"
-    >
-      {isPending ? '삭제 중...' : '삭제'}
-    </button>
-  )
+  return <DeleteActionButton onDelete={() => deleteCommentAction(commentId, noteId)} />
 }
