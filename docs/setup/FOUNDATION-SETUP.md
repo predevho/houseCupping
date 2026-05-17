@@ -84,6 +84,7 @@ agent-coding/
 | `src/app/(app)/layout.tsx` | 인증된 페이지 공통 레이아웃 (Header 포함) |
 | `src/app/(app)/error.tsx` | 인증된 페이지 공통 에러 UI |
 | `src/app/(app)/loading.tsx` | 인증된 페이지 공통 로딩 UI |
+| `src/app/(app)/page.tsx` | 공개 홈 피드 페이지 |
 | `src/app/(app)/_actions/logout.ts` | 로그아웃 Server Action |
 | `src/components/ui/toast.tsx` | 전역 Toast Provider + `useToast` 훅 |
 | `src/components/layout/Header.tsx` | 공통 헤더 Server Component |
@@ -141,6 +142,7 @@ agent-coding/
 | 기능 | 문서 |
 |---|---|
 | 인증 UI (`/auth` — 로그인·회원가입 탭) | `docs/features/AUTH-IMPLEMENTATION.md` |
+| 인증 후 원래 페이지 복귀 (`/auth?next=...`) | `docs/features/AUTH-IMPLEMENTATION.md` |
 | 공통 레이아웃 및 헤더 (`Header`, `LogoutButton`, `logoutAction`) | `docs/features/LAYOUT-IMPLEMENTATION.md` |
 | 인증 영역 공통 에러 UI (`src/app/(app)/error.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
 | 인증 영역 공통 로딩 UI (`src/app/(app)/loading.tsx`) | `docs/setup/FOUNDATION-SETUP.md` |
@@ -154,6 +156,7 @@ agent-coding/
 | 원두 이미지 업로드 (등록/수정, 목록/상세 표시) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 목록 (`/beans`) | `docs/features/BEAN-IMPLEMENTATION.md` |
 | 원두 상세 조회 + 평균 평점 + 커핑 노트 목록 (`/beans/[id]`) | `docs/features/BEAN-IMPLEMENTATION.md` |
+| 공개 홈 피드 (`/` — 최신 커핑 노트) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 목록 (`/cupping`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 등록 (`/cupping/new`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
 | 커핑 노트 상세 조회 (`/cupping/[id]`) | `docs/features/CUPPING-IMPLEMENTATION.md` |
@@ -166,4 +169,4 @@ agent-coding/
 
 ## 다음 작업
 
-- [ ] TODO 문서 기준 다음 우선순위 작업으로 갱신 필요
+- [ ] 이메일 인증 활성화 여부 결정 및 처리

@@ -10,6 +10,7 @@
 
 `/auth` 페이지 하나에서 로그인과 회원가입을 탭 전환으로 처리한다.
 로그인은 **아이디(username) 기반**으로 `profiles` 테이블에서 email을 역조회한 뒤 Supabase `signInWithPassword`를 호출한다.
+`next` query string이 있으면 로그인/회원가입 성공 후 원래 보던 페이지로 복귀한다.
 
 ---
 
@@ -19,17 +20,17 @@
 /auth (page.tsx — Server Component)
   └─ 인증 체크: supabase.auth.getUser()
        ├─ 로그인 상태 → redirect('/')
-       └─ 미인증 → <AuthTabs /> 렌더링
+       └─ 미인증 → <AuthTabs next={searchParams.next} /> 렌더링
 
 AuthTabs (Client Component)
-  ├─ tab === 'login'  → <LoginForm />
-  └─ tab === 'signup' → <SignupForm />
+  ├─ tab === 'login'  → <LoginForm next={next} />
+  └─ tab === 'signup' → <SignupForm next={next} />
 
 LoginForm / SignupForm (Client Component)
   └─ useActionState(loginAction | signupAction, null)
        └─ actions.ts ('use server')
-            ├─ loginAction  → profiles 역조회 → signInWithPassword → redirect('/')
-            └─ signupAction → username 중복 체크 → signUp → redirect('/')
+            ├─ loginAction  → profiles 역조회 → signInWithPassword → redirect(next || '/')
+            └─ signupAction → username 중복 체크 → signUp → redirect(next || '/')
 ```
 
 ---
@@ -69,26 +70,30 @@ LoginForm / SignupForm (Client Component)
 ### `loginAction`
 
 ```
-FormData(username, password)
+FormData(username, password, next?)
   → 빈 값 체크 → 에러 반환
   → supabase.from('profiles').select('email').eq('username', username).single()
       → profile 없음 → 에러 반환 ('아이디 또는 비밀번호가 올바르지 않습니다')
   → supabase.auth.signInWithPassword({ email: profile.email, password })
       → 실패 → 에러 반환 (동일 메시지 — username 열거 방지)
-      → 성공 → redirect('/')
+      → 성공 → sanitizeNextPath(next)
+          → '/...' 형태의 앱 내부 경로면 그대로 사용
+          → '//' 또는 외부 URL/상대경로면 '/' fallback
+      → redirect(next 또는 '/')
 ```
 
 ### `signupAction`
 
 ```
-FormData(username, display_name, email, password)
+FormData(username, display_name, email, password, next?)
   → 빈 값 체크 → 에러 반환
   → supabase.from('profiles').select('id').eq('username', username).single()
       → 중복 → { errors: { username: '이미 사용 중인 아이디입니다' } }
   → supabase.auth.signUp({ email, password, options: { data: { username, display_name } } })
       → 'already registered' → { errors: { email: '이미 가입된 이메일입니다' } }
       → 기타 에러 → { errors: { general: '잠시 후 다시 시도해주세요' } }
-      → 성공 → redirect('/')
+      → 성공 → sanitizeNextPath(next)
+      → redirect(next 또는 '/')
 ```
 
 ### 상태 타입
@@ -139,11 +144,11 @@ url.pathname = '/auth'
 
 | 파일 | 테스트 수 | 커버리지 |
 |------|-----------|----------|
-| `actions.test.ts` | 6 | loginAction 3케이스, signupAction 3케이스 |
-| `AuthTabs.test.tsx` | 3 | 초기 상태, 탭 전환, 복귀 |
-| `LoginForm.test.tsx` | 3 | 렌더링, 에러 표시, pending 비활성화 |
-| `SignupForm.test.tsx` | 4 | 필드 렌더링, username 에러, 비밀번호 불일치, pending |
-| **합계** | **16** | **전체 PASS** |
+| `actions.test.ts` | 10 | loginAction 5케이스, signupAction 5케이스 |
+| `AuthTabs.test.tsx` | 5 | 초기 상태, 탭 전환, `next` 전달 |
+| `LoginForm.test.tsx` | 4 | 렌더링, 에러 표시, pending, hidden `next` |
+| `SignupForm.test.tsx` | 5 | 필드 렌더링, username 에러, 비밀번호 불일치, pending, hidden `next` |
+| **합계** | **24** | **전체 PASS** |
 
 ---
 
@@ -175,6 +180,4 @@ url.pathname = '/auth'
 
 ## 다음 작업
 
-- [ ] 로그아웃 버튼 (네비게이션 바)
-- [ ] 프로필 페이지 (내 정보 조회/수정)
 - [ ] 이메일 인증 활성화 여부 결정 및 처리
