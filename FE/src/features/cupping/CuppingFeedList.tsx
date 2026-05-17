@@ -21,7 +21,7 @@ interface Props {
 
 export default function CuppingFeedList({ notes, emptyMessage }: Props) {
   if (notes.length === 0) {
-    return <p className="text-sm text-gray-400">{emptyMessage}</p>
+    return <p className="text-sm text-gray-400 dark:text-gray-500">{emptyMessage}</p>
   }
 
   return (
@@ -33,13 +33,13 @@ export default function CuppingFeedList({ notes, emptyMessage }: Props) {
           <li key={note.id}>
             <Link
               href={`/cupping/${note.id}`}
-              className="flex flex-col gap-2 rounded-lg border border-gray-100 px-4 py-3 transition-colors hover:border-gray-300"
+              className="flex flex-col gap-2 rounded-lg border border-gray-100 px-4 py-3 transition-colors hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-600"
             >
               <div>
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                   {note.beans ? `${note.beans.bean_name} - ${note.beans.cafe_name}` : '알 수 없는 원두'}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   <span>{note.profiles?.display_name ?? note.profiles?.username ?? '알 수 없음'}</span>
                   <span> · </span>
                   <span>{new Date(note.created_at).toLocaleDateString('ko-KR')}</span>
@@ -50,9 +50,9 @@ export default function CuppingFeedList({ notes, emptyMessage }: Props) {
                 <span>산미 {note.acidity}</span>
                 <span>바디 {note.body}</span>
               </div>
-              {note.roast_date && <p className="text-xs text-gray-400">로스팅일 {note.roast_date}</p>}
-              {note.memo && <p className="line-clamp-2 text-sm text-gray-600">{note.memo}</p>}
-              <p className="text-xs text-gray-400">♥ {likeCount}  💬 {commentCount}</p>
+              {note.roast_date && <p className="text-xs text-gray-400 dark:text-gray-500">로스팅일 {note.roast_date}</p>}
+              {note.memo && <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{note.memo}</p>}
+              <p className="text-xs text-gray-400 dark:text-gray-500">♥ {likeCount}  💬 {commentCount}</p>
             </Link>
           </li>
         )

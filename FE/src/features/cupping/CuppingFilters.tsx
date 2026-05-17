@@ -20,7 +20,7 @@ export default function CuppingFilters({ beanOptions, beanId, sort }: Props) {
           id="beanId"
           name="beanId"
           defaultValue={beanId ?? ''}
-          className="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white"
+          className="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
         >
           <option value="">전체 원두</option>
           {beanOptions.map((bean) => (
@@ -37,7 +37,7 @@ export default function CuppingFilters({ beanOptions, beanId, sort }: Props) {
           id="sort"
           name="sort"
           defaultValue={sort ?? 'latest'}
-          className="border border-gray-200 rounded px-3 py-2 text-sm bg-white"
+          className="border border-gray-200 rounded px-3 py-2 text-sm bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
         >
           <option value="latest">최신순</option>
           <option value="oldest">오래된순</option>
