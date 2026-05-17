@@ -12,7 +12,7 @@ export default function BeanSearch({ q }: Props) {
         name="q"
         defaultValue={q ?? ''}
         placeholder="원두명 또는 카페명 검색"
-        className="flex-1 border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-[#8B2635]"
+        className="flex-1 border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-[#8B2635] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
       />
       <button
         type="submit"

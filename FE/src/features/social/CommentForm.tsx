@@ -45,7 +45,7 @@ export default function CommentForm({ noteId, userId }: Props) {
       <textarea
         name="content"
         placeholder="댓글을 입력하세요"
-        className="w-full rounded-md border border-gray-200 p-2 text-sm outline-none"
+        className="w-full rounded-md border border-gray-200 p-2 text-sm outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
         rows={2}
       />
       {state?.error && <p className="text-xs text-red-500">{state.error}</p>}

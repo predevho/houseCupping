@@ -41,10 +41,10 @@ export default function CuppingForm({
       {beanId && <input type="hidden" name="bean_id" value={beanId} />}
       {noteId && <input type="hidden" name="note_id" value={noteId} />}
 
-      <p className="text-sm text-gray-500">{beanLabel}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">{beanLabel}</p>
 
       <div>
-        <label htmlFor="aroma" className="text-xs font-semibold text-gray-500">
+        <label htmlFor="aroma" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
           향미 (Aroma) <span className="text-red-500">*</span>
         </label>
         <select
@@ -52,7 +52,7 @@ export default function CuppingForm({
           name="aroma"
           required
           defaultValue={initialValues?.aroma?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
+          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           <option value="" disabled>선택</option>
           {SCORE_OPTIONS.map((v) => (
@@ -67,7 +67,7 @@ export default function CuppingForm({
       </div>
 
       <div>
-        <label htmlFor="acidity" className="text-xs font-semibold text-gray-500">
+        <label htmlFor="acidity" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
           산미 (Acidity) <span className="text-red-500">*</span>
         </label>
         <select
@@ -75,7 +75,7 @@ export default function CuppingForm({
           name="acidity"
           required
           defaultValue={initialValues?.acidity?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
+          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           <option value="" disabled>선택</option>
           {SCORE_OPTIONS.map((v) => (
@@ -90,7 +90,7 @@ export default function CuppingForm({
       </div>
 
       <div>
-        <label htmlFor="body" className="text-xs font-semibold text-gray-500">
+        <label htmlFor="body" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
           바디 (Body) <span className="text-red-500">*</span>
         </label>
         <select
@@ -98,7 +98,7 @@ export default function CuppingForm({
           name="body"
           required
           defaultValue={initialValues?.body?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
+          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           <option value="" disabled>선택</option>
           {SCORE_OPTIONS.map((v) => (
@@ -113,7 +113,7 @@ export default function CuppingForm({
       </div>
 
       <div>
-        <label htmlFor="roast_date" className="text-xs font-semibold text-gray-500">
+        <label htmlFor="roast_date" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
           로스팅 날짜
         </label>
         <input
@@ -121,12 +121,12 @@ export default function CuppingForm({
           name="roast_date"
           type="date"
           defaultValue={initialValues?.roast_date ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
+          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         />
       </div>
 
       <div>
-        <label htmlFor="memo" className="text-xs font-semibold text-gray-500">
+        <label htmlFor="memo" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
           메모
         </label>
         <textarea
@@ -134,19 +134,19 @@ export default function CuppingForm({
           name="memo"
           rows={3}
           defaultValue={initialValues?.memo ?? ''}
-          className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none resize-none"
+          className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none resize-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         />
       </div>
 
       <div>
-        <label htmlFor="score" className="text-xs font-semibold text-gray-500">
+        <label htmlFor="score" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
           종합 평점
         </label>
         <select
           id="score"
           name="score"
           defaultValue={initialValues?.score?.toString() ?? ''}
-          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
+          className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           <option value="">선택 안 함</option>
           {SCORE_OPTIONS.map((v) => (
