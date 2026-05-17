@@ -141,7 +141,7 @@ describe('deleteCuppingAction', () => {
       auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
       from: mockFrom,
     })
-    await deleteCuppingAction('note-1', 'bean-1')
+    await deleteCuppingAction('1', '1')
     expect(mockRedirect).not.toHaveBeenCalled()
     expect(mockFrom).not.toHaveBeenCalled()
   })
@@ -156,12 +156,12 @@ describe('deleteCuppingAction', () => {
       from: mockFrom,
     })
 
-    await deleteCuppingAction('note-1', 'bean-1')
+    await deleteCuppingAction('1', '1')
 
     expect(mockFrom).toHaveBeenCalledWith('cupping_notes')
-    expect(mockEqOuter).toHaveBeenCalledWith('id', 'note-1')
+    expect(mockEqOuter).toHaveBeenCalledWith('id', 1)
     expect(mockEqInner).toHaveBeenCalledWith('user_id', 'user-1')
-    expect(mockRedirect).toHaveBeenCalledWith('/beans/bean-1')
+    expect(mockRedirect).toHaveBeenCalledWith('/beans/1')
   })
 })
 
@@ -175,13 +175,13 @@ describe('updateCuppingAction', () => {
   })
 
   it('aroma가 비어있으면 required 에러를 반환한다', async () => {
-    const fd = makeFormData({ note_id: 'note-1', aroma: '', acidity: '3.5', body: '3.0' })
+    const fd = makeFormData({ note_id: '1', aroma: '', acidity: '3.5', body: '3.0' })
     const result = await updateCuppingAction(null, fd)
     expect(result).toEqual({ errors: { aroma: '향미를 선택해주세요' } })
   })
 
   it('aroma가 범위를 벗어나면 에러를 반환한다', async () => {
-    const fd = makeFormData({ note_id: 'note-1', aroma: '6.0', acidity: '3.5', body: '3.0' })
+    const fd = makeFormData({ note_id: '1', aroma: '6.0', acidity: '3.5', body: '3.0' })
     const result = await updateCuppingAction(null, fd)
     expect(result).toEqual({ errors: { aroma: '향미는 0.5~5.0 사이로 입력해주세요' } })
   })
@@ -191,13 +191,13 @@ describe('updateCuppingAction', () => {
       auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
       from: jest.fn(),
     })
-    const fd = makeFormData({ note_id: 'note-1', aroma: '4.0', acidity: '3.5', body: '3.0' })
+    const fd = makeFormData({ note_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0' })
     const result = await updateCuppingAction(null, fd)
     expect(result).toEqual({ errors: { general: '로그인이 필요합니다' } })
   })
 
   it('성공 시 cupping_notes를 update하고 redirect를 호출한다', async () => {
-    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null })
+    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 1 }], error: null })
     const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
@@ -207,17 +207,17 @@ describe('updateCuppingAction', () => {
       from: mockFrom,
     })
 
-    const fd = makeFormData({ note_id: 'note-1', aroma: '4.0', acidity: '3.5', body: '3.0' })
+    const fd = makeFormData({ note_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0' })
     await updateCuppingAction(null, fd)
 
     expect(mockFrom).toHaveBeenCalledWith('cupping_notes')
-    expect(mockEq1).toHaveBeenCalledWith('id', 'note-1')
+    expect(mockEq1).toHaveBeenCalledWith('id', 1)
     expect(mockEq2).toHaveBeenCalledWith('user_id', 'user-1')
-    expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')
+    expect(mockRedirect).toHaveBeenCalledWith('/cupping/1')
   })
 
   it('score 있으면 bean_ratings upsert를 호출한다', async () => {
-    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null })
+    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 1 }], error: null })
     const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
@@ -232,7 +232,7 @@ describe('updateCuppingAction', () => {
       from: mockFrom,
     })
 
-    const fd = makeFormData({ note_id: 'note-1', bean_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
+    const fd = makeFormData({ note_id: '1', bean_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
     await updateCuppingAction(null, fd)
 
     expect(mockFrom).toHaveBeenCalledWith('bean_ratings')
@@ -240,11 +240,11 @@ describe('updateCuppingAction', () => {
       { user_id: 'user-1', bean_id: 1, score: 4.5 },
       { onConflict: 'user_id,bean_id' }
     )
-    expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')
+    expect(mockRedirect).toHaveBeenCalledWith('/cupping/1')
   })
 
   it('bean_id가 없으면 score가 있어도 bean_ratings upsert를 호출하지 않는다', async () => {
-    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null })
+    const mockSelect = jest.fn().mockResolvedValue({ data: [{ id: 1 }], error: null })
     const mockEq2 = jest.fn().mockReturnValue({ select: mockSelect })
     const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 })
     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq1 })
@@ -260,11 +260,11 @@ describe('updateCuppingAction', () => {
     })
 
     // note: no bean_id in formData
-    const fd = makeFormData({ note_id: 'note-1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
+    const fd = makeFormData({ note_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0', score: '4.5' })
     await updateCuppingAction(null, fd)
 
     expect(mockUpsert).not.toHaveBeenCalled()
-    expect(mockRedirect).toHaveBeenCalledWith('/cupping/note-1')
+    expect(mockRedirect).toHaveBeenCalledWith('/cupping/1')
   })
 
   it('UPDATE 실패 시 general 에러를 반환한다', async () => {
@@ -277,7 +277,7 @@ describe('updateCuppingAction', () => {
       from: jest.fn().mockReturnValue({ update: mockUpdate }),
     })
 
-    const fd = makeFormData({ note_id: 'note-1', aroma: '4.0', acidity: '3.5', body: '3.0' })
+    const fd = makeFormData({ note_id: '1', aroma: '4.0', acidity: '3.5', body: '3.0' })
     const result = await updateCuppingAction(null, fd)
     expect(result).toEqual({ errors: { general: '잠시 후 다시 시도해주세요' } })
   })

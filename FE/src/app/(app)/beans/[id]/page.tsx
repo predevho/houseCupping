@@ -12,6 +12,7 @@ interface BeanDetail {
   origin: string | null
   process: string | null
   roast_level: string | null
+  image_path: string | null
   created_at: string
   profiles: { username: string } | null
 }
@@ -37,13 +38,15 @@ interface Props {
 
 export default async function BeanDetailPage({ params }: Props) {
   const { id } = await params
+  const beanId = Number(id)
+  if (!beanId) notFound()
   const supabase = await createClient()
 
   const [{ data }, { data: authData }] = await Promise.all([
     supabase
     .from('beans')
-    .select('id, user_id, cafe_name, bean_name, origin, process, roast_level, created_at, profiles(username)')
-    .eq('id', id)
+    .select('id, user_id, cafe_name, bean_name, origin, process, roast_level, image_path, created_at, profiles(username)')
+    .eq('id', beanId)
     .maybeSingle(),
     supabase.auth.getUser(),
   ])
@@ -55,13 +58,13 @@ export default async function BeanDetailPage({ params }: Props) {
   const { data: notesData, error: notesError } = await supabase
     .from('cupping_notes')
     .select('id, aroma, acidity, body, roast_date, memo, created_at, profiles(username)')
-    .eq('bean_id', id)
+    .eq('bean_id', beanId)
     .order('created_at', { ascending: false })
 
   const { data: ratingsData, error: ratingsError } = await supabase
     .from('bean_ratings')
     .select('score')
-    .eq('bean_id', id)
+    .eq('bean_id', beanId)
 
   if (notesError) console.error('cupping_notes query error:', notesError)
   if (ratingsError) console.error('bean_ratings query error:', ratingsError)
@@ -81,6 +84,14 @@ export default async function BeanDetailPage({ params }: Props) {
 
   return (
     <main className="max-w-md mx-auto px-4 py-8 flex flex-col gap-4">
+      {bean.image_path && (
+        <img
+          src={supabase.storage.from('beans').getPublicUrl(bean.image_path).data.publicUrl}
+          alt={`${bean.bean_name} 대표 이미지`}
+          className="w-full aspect-[4/3] rounded-xl object-cover border border-gray-100"
+        />
+      )}
+
       <div>
         <p className="text-lg font-bold">{bean.bean_name}</p>
         <p className="text-gray-500 text-sm">{bean.cafe_name}</p>

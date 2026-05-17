@@ -6,6 +6,9 @@ import { createClient } from '@/lib/supabase/server'
 export type CommentFormState = { error?: string; success?: true } | null
 
 export async function toggleLikeAction(noteId: string): Promise<void> {
+  const noteIdNumber = Number(noteId)
+  if (!noteIdNumber) return
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
@@ -13,13 +16,13 @@ export async function toggleLikeAction(noteId: string): Promise<void> {
   const { data: existing } = await supabase
     .from('likes')
     .select('id')
-    .eq('note_id', noteId)
+    .eq('note_id', noteIdNumber)
     .eq('user_id', user.id)
     .maybeSingle()
 
   const { error } = existing
-    ? await supabase.from('likes').delete().eq('note_id', noteId).eq('user_id', user.id)
-    : await supabase.from('likes').insert({ note_id: noteId, user_id: user.id })
+    ? await supabase.from('likes').delete().eq('note_id', noteIdNumber).eq('user_id', user.id)
+    : await supabase.from('likes').insert({ note_id: noteIdNumber, user_id: user.id })
 
   if (error) return
   revalidatePath(`/cupping/${noteId}`)
@@ -31,17 +34,18 @@ export async function createCommentAction(
 ): Promise<CommentFormState> {
   const content = (formData.get('content') as string)?.trim()
   const noteId = formData.get('note_id') as string
+  const noteIdNumber = Number(noteId)
 
   if (!content) return { error: '댓글을 입력해주세요' }
   if (content.length > 500) return { error: '댓글은 500자 이하로 입력해주세요' }
-  if (!noteId) return { error: '노트 정보가 없습니다' }
+  if (!noteIdNumber) return { error: '노트 정보가 없습니다' }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '로그인이 필요합니다' }
 
   const { error } = await supabase.from('comments').insert({
-    note_id: noteId,
+    note_id: noteIdNumber,
     user_id: user.id,
     content,
   })
@@ -53,11 +57,18 @@ export async function createCommentAction(
 }
 
 export async function deleteCommentAction(commentId: string, noteId: string): Promise<void> {
+  const commentIdNumber = Number(commentId)
+  if (!commentIdNumber) return
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
 
-  const { error } = await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id)
+  const { error } = await supabase
+    .from('comments')
+    .delete()
+    .eq('id', commentIdNumber)
+    .eq('user_id', user.id)
   if (error) return
   revalidatePath(`/cupping/${noteId}`)
 }

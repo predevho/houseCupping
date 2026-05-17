@@ -21,11 +21,13 @@
 ## 동작
 
 - `/beans`: 최신순 원두 목록 표시, `q` 검색어로 원두명/카페명 검색
+- `/beans`: 원두 이미지가 있으면 썸네일 표시, 없으면 플레이스홀더 표시
 - `/beans/new`: 카페명/원두명(필수) + 원산지/가공방식/로스팅(선택) 입력 후 등록
+- `/beans/new`: JPG/PNG/WebP 대표 이미지 1장 업로드 가능 (최대 5MB)
 - 등록 성공 시 `/beans/[id]`로 redirect
-- `/beans/[id]`: 원두 상세 정보 표시, 탈퇴 회원의 원두는 등록자 '알 수 없음' 표시
+- `/beans/[id]`: 원두 상세 정보와 대표 이미지 표시, 탈퇴 회원의 원두는 등록자 '알 수 없음' 표시
 - `/beans/[id]`: `bean_ratings.score` 기준 평균 종합 평점과 참여 인원 수 표시
-- `/beans/[id]/edit`: 등록자 본인만 수정 가능, 기존 값 pre-fill
+- `/beans/[id]/edit`: 등록자 본인만 수정 가능, 기존 값 pre-fill, 새 대표 이미지로 교체 가능
 - 원두 상세 페이지에서 본인 원두면 `수정` 링크 표시
 - 원두 상세 페이지에서 admin이면 `삭제` 버튼 표시, 삭제 성공 시 `/beans`로 redirect
 - 가공방식 선택: Washed / Natural / Honey / Anaerobic
@@ -64,6 +66,11 @@
 - 원두 상세 페이지에서 admin에게만 삭제 버튼 표시
 - 삭제 성공 시 `/beans`로 redirect
 
-## 범위 외 (추후 추가)
+### 2026-05-17 — 원두 이미지 업로드 추가
 
-- 이미지 업로드 (Supabase Storage + image_url 컬럼 마이그레이션 필요)
+- `beans.image_path` 컬럼과 public `beans` Storage bucket 사용
+- `BeanForm`에 multipart 업로드 input 추가
+- 허용 형식: JPG / PNG / WebP
+- 크기 제한: 5MB
+- 업로드 성공 시 `image_path` 저장
+- `/beans` 목록에 썸네일 표시, `/beans/[id]` 상세에 대표 이미지 표시
