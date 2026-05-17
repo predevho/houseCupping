@@ -1,6 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
+import FieldError from '@/components/ui/FieldError'
+import FormSubmitButton from '@/components/ui/FormSubmitButton'
 import { type CuppingFormState } from './actions'
 
 const SCORE_OPTIONS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
@@ -59,11 +61,7 @@ export default function CuppingForm({
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
-        {state?.errors?.aroma && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.aroma}
-          </p>
-        )}
+        <FieldError message={state?.errors?.aroma} />
       </div>
 
       <div>
@@ -82,11 +80,7 @@ export default function CuppingForm({
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
-        {state?.errors?.acidity && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.acidity}
-          </p>
-        )}
+        <FieldError message={state?.errors?.acidity} />
       </div>
 
       <div>
@@ -105,11 +99,7 @@ export default function CuppingForm({
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
-        {state?.errors?.body && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.body}
-          </p>
-        )}
+        <FieldError message={state?.errors?.body} />
       </div>
 
       <div>
@@ -153,26 +143,14 @@ export default function CuppingForm({
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
-        {state?.errors?.score && (
-          <p role="alert" className="text-[10px] text-red-600 mt-1">
-            {state.errors.score}
-          </p>
-        )}
+        <FieldError message={state?.errors?.score} />
       </div>
 
-      {state?.errors?.general && (
-        <p role="alert" className="text-xs text-red-600">
-          {state.errors.general}
-        </p>
-      )}
+      <FieldError message={state?.errors?.general} />
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="h-10 bg-[#8B2635] text-white rounded-md text-sm font-semibold disabled:opacity-50"
-      >
-        {isPending ? '처리 중...' : submitLabel}
-      </button>
+      <FormSubmitButton isPending={isPending} pendingLabel="처리 중...">
+        {submitLabel}
+      </FormSubmitButton>
     </form>
   )
 }
