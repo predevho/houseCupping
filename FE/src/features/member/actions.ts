@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 export type UpdateProfileState = {
+  success?: true
   errors?: {
     username?: string
     display_name?: string
@@ -60,5 +61,5 @@ export async function updateProfileAction(
   }
 
   revalidatePath('/profile')
-  return null
+  return { success: true }
 }

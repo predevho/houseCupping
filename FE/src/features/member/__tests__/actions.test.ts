@@ -88,6 +88,6 @@ describe('updateProfileAction', () => {
     const result = await updateProfileAction(null, fd)
 
     expect(mockRevalidatePath).toHaveBeenCalledWith('/profile')
-    expect(result).toBeNull()
+    expect(result).toEqual({ success: true })
   })
 })

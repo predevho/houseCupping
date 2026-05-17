@@ -1,6 +1,7 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
+import { useToast } from '@/components/ui/toast'
 import { updateProfileAction, type UpdateProfileState } from './actions'
 
 interface EditFormProps {
@@ -8,10 +9,17 @@ interface EditFormProps {
 }
 
 export default function EditForm({ initialValues }: EditFormProps) {
+  const { showToast } = useToast()
   const [state, action, isPending] = useActionState<UpdateProfileState, FormData>(
     updateProfileAction,
     null
   )
+
+  useEffect(() => {
+    if (state?.success) {
+      showToast({ message: '프로필이 저장되었어요', type: 'success' })
+    }
+  }, [showToast, state])
 
   return (
     <form action={action} className="flex flex-col gap-3">
@@ -24,9 +32,13 @@ export default function EditForm({ initialValues }: EditFormProps) {
           name="username"
           type="text"
           defaultValue={initialValues.username}
+          minLength={4}
+          maxLength={16}
+          pattern="^[a-zA-Z0-9_-]{4,16}$"
           required
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         />
+        <p className="text-[10px] text-gray-400 mt-1">영문, 숫자, _, - 만 사용 (4~16자)</p>
         {state?.errors?.username && (
           <p role="alert" className="text-[10px] text-red-600 mt-1">
             {state.errors.username}
@@ -43,9 +55,12 @@ export default function EditForm({ initialValues }: EditFormProps) {
           name="display_name"
           type="text"
           defaultValue={initialValues.display_name}
+          minLength={4}
+          maxLength={12}
           required
           className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none"
         />
+        <p className="text-[10px] text-gray-400 mt-1">4~12자</p>
         {state?.errors?.display_name && (
           <p role="alert" className="text-[10px] text-red-600 mt-1">
             {state.errors.display_name}

@@ -8,6 +8,9 @@ jest.mock('@/components/ui/button', () => ({
     <button type={type} disabled={disabled}>{children}</button>
   ),
 }))
+jest.mock('@/components/ui/toast', () => ({
+  useToast: () => ({ showToast: jest.fn() }),
+}))
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useActionState: (_action: unknown, initialState: unknown) => [initialState, jest.fn(), false],

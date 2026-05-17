@@ -1,7 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import EditForm from '../EditForm'
 
+const mockShowToast = jest.fn()
+
 jest.mock('../actions', () => ({ updateProfileAction: jest.fn() }))
+jest.mock('@/components/ui/toast', () => ({
+  useToast: () => ({ showToast: mockShowToast }),
+}))
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -54,5 +59,25 @@ describe('EditForm', () => {
   it('기본 상태에서 저장 버튼이 활성화된다', () => {
     render(<EditForm {...defaultProps} />)
     expect(screen.getByRole('button', { name: '저장' })).toBeEnabled()
+  })
+
+  it('필드 힌트와 길이 제한을 표시한다', () => {
+    render(<EditForm {...defaultProps} />)
+
+    expect(screen.getByText('영문, 숫자, _, - 만 사용 (4~16자)')).toBeInTheDocument()
+    expect(screen.getByText('4~12자')).toBeInTheDocument()
+    expect(screen.getByLabelText('사용자명')).toHaveAttribute('maxLength', '16')
+    expect(screen.getByLabelText('표시이름')).toHaveAttribute('maxLength', '12')
+  })
+
+  it('성공 상태에서 저장 완료 토스트를 띄운다', () => {
+    jest.requireMock('react').useActionState = () => [{ success: true }, jest.fn(), false]
+
+    render(<EditForm {...defaultProps} />)
+
+    expect(mockShowToast).toHaveBeenCalledWith({
+      message: '프로필이 저장되었어요',
+      type: 'success',
+    })
   })
 })
